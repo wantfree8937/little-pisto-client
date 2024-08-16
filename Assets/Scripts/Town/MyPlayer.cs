@@ -16,8 +16,10 @@ public class MyPlayer : MonoBehaviour
     private Animator animator;
     
     private Vector3 lastPos;
-    
-    
+
+    [Header("Movement")]
+    [SerializeField] ParticleSystem clickEffect;
+    [SerializeField] LayerMask clickableLayers;
 
     private List<int> animHash = new List<int>(); 
     
@@ -40,6 +42,12 @@ public class MyPlayer : MonoBehaviour
         animHash.Add(Constants.TownPlayerAnim3);
     }
 
+    public void Set(ParticleSystem clickEffect, LayerMask clickableLayers)
+    {
+        this.clickEffect = clickEffect;
+        this.clickableLayers = clickableLayers;
+    }
+
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -47,9 +55,14 @@ public class MyPlayer : MonoBehaviour
             if(eSystem.IsPointerOverGameObject()) return;
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray.origin, ray.direction, out rayHit))
+            if (Physics.Raycast(ray.origin, ray.direction, out rayHit, 100f, clickableLayers))
             {
                 agent.SetDestination(rayHit.point);
+                if (clickEffect != null)
+                {
+                    ParticleSystem go = Instantiate(clickEffect, rayHit.point + new Vector3(0, 0.1f, 0), clickEffect.transform.rotation);
+                    Destroy(go.gameObject, 1);
+                }
             }
         }
 

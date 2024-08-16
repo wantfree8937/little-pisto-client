@@ -21,6 +21,10 @@ public class Player : MonoBehaviour
 
     private Animator animator;
 
+    [Header("Movement")]
+    [SerializeField] ParticleSystem clickEffect;
+    [SerializeField] LayerMask clickableLayers;
+
     public int PlayerId { get; private set; }
     public bool IsMine  { get; private set; }
     private bool isInit = false;
@@ -51,6 +55,7 @@ public class Player : MonoBehaviour
         if (IsMine)
         {
             mPlayer = gameObject.AddComponent<MyPlayer>();
+            mPlayer.Set(clickEffect, clickableLayers);
         }
         else
             Destroy(gameObject.GetComponent<NavMeshAgent>());

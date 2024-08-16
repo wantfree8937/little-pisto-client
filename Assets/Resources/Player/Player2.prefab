@@ -548,6 +548,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiNameChat: {fileID: 1200556243168238343}
+  clickEffect: {fileID: 460823720299495076, guid: b99ddfc66c1670c48908623b36f9df2a,
+    type: 3}
+  clickableLayers:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!1 &2428329065537283635
 GameObject:
   m_ObjectHideFlags: 0

@@ -73,7 +73,6 @@ class PacketManager
 		// 아이디를 1바이트로 읽음
 		byte id = buffer.Array[buffer.Offset + count];
 		count += 1;
-		Debug.Log(id);
 		Action<PacketSession, ArraySegment<byte>, ushort> action = null;
 		if (_onRecv.TryGetValue(id, out action))
 			action.Invoke(session, buffer, id);
