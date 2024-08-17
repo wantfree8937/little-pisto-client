@@ -10,6 +10,7 @@ using UnityEngine.EventSystems;
 public class MyPlayer : MonoBehaviour
 {
     [SerializeField] private NavMeshAgent agent;
+    private Rigidbody rb;
     private RaycastHit rayHit = new RaycastHit();
     private EventSystem eSystem;
     
@@ -29,7 +30,20 @@ public class MyPlayer : MonoBehaviour
         
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-        
+
+        rb = GetComponent<Rigidbody>();
+        if (rb == null)
+        {
+            rb = gameObject.AddComponent<Rigidbody>();
+        }
+
+        rb.isKinematic = true;
+
+        if (GetComponent<Collider>() == null)
+        {
+            gameObject.AddComponent<BoxCollider>();
+        }
+
         TownManager.Instance.FreeLook.Follow = transform;
         TownManager.Instance.FreeLook.LookAt = transform;
         
