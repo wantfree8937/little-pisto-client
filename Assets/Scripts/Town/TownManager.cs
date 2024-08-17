@@ -46,6 +46,9 @@ public class TownManager : MonoBehaviour
         playerDb.Add(1004, "Player/Player4");
         playerDb.Add(1005, "Player/Player5");
         playerDb.Add(1006, "Player/Player6");
+        playerDb.Add(1007, "Player/Player7");
+        playerDb.Add(1008, "Player/Player8");
+        playerDb.Add(1009, "Player/Player9");
     }
 
     private void Start()
@@ -105,6 +108,7 @@ public class TownManager : MonoBehaviour
 
         var playerId = playerInfo.PlayerId;
         var playerResPath = playerDb.GetValueOrDefault(playerInfo.Class, basePlayerPath);
+
         var playerRes = Resources.Load<Player>(playerResPath);
         var player = Instantiate(playerRes, spawnPos, spawnRot);
         player.Move(spawnPos, spawnRot);

@@ -205,11 +205,11 @@ class PacketHandler
 		S_PlayerAction pkt = packet as S_PlayerAction;
 		if (pkt == null)
 			return;
-
-		Monster monster = BattleManager.Instance.GetMonster(pkt.TargetMonsterIdx);
+        
+        Monster monster = BattleManager.Instance.GetMonster(pkt.TargetMonsterIdx);
 		monster.Hit();
-		
-		BattleManager.Instance.PlayerAnim(pkt.ActionSet.AnimCode);
+        
+        BattleManager.Instance.PlayerAnim(pkt.ActionSet.AnimCode);
 		EffectManager.Instance.SetEffectToMonster(pkt.TargetMonsterIdx, pkt.ActionSet.EffectCode);
 	}
 	
