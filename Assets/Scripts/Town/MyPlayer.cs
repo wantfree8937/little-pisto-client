@@ -40,6 +40,9 @@ public class MyPlayer : MonoBehaviour
         animHash.Add(Constants.TownPlayerAnim1);
         animHash.Add(Constants.TownPlayerAnim2);
         animHash.Add(Constants.TownPlayerAnim3);
+        animHash.Add(Constants.TownPlayerAnim4);
+        animHash.Add(Constants.TownPlayerAnim5);
+        animHash.Add(Constants.TownPlayerAnim6);
     }
 
     public void Set(ParticleSystem clickEffect, LayerMask clickableLayers)
@@ -50,7 +53,7 @@ public class MyPlayer : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(1))
         {
             if(eSystem.IsPointerOverGameObject()) return;
 

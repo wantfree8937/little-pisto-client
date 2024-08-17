@@ -17,7 +17,7 @@ public class CameraControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        canRotate = Input.GetMouseButton(1);
+        canRotate = Input.GetMouseButton(0);
         
         if(canRotate)
         {
