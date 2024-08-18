@@ -25,11 +25,12 @@ public class TownManager : MonoBehaviour
     [SerializeField] private UIStart uiStart;
     [SerializeField] private UIAnimation uiAnimation;
     [SerializeField] private UIChat uiChat;
+    [SerializeField] private UICoin coinDisplay;
+    [SerializeField] private UISoul soulDisplay;
 
     public UIChat UiChat => uiChat;
     
     [SerializeField] private TMP_Text txtServer;
-
 
     private Dictionary<int, Player> playerList = new Dictionary<int, Player>();
     private Dictionary<int, string> playerDb = new Dictionary<int, string>();
@@ -65,10 +66,11 @@ public class TownManager : MonoBehaviour
 
     public void GameStart(string gameServer, string port, string userName, int classIdx)
     {
-        
         GameManager.Network.Init(gameServer, port);
         GameManager.Instance.UserName = userName;
         GameManager.Instance.ClassIdx = classIdx + 1001;
+        coinDisplay.AddCoins(classIdx);
+        soulDisplay.AddSouls(classIdx);
 
         Debug.Log("Sparta@@@@@"+GameManager.Instance.ClassIdx);
 
