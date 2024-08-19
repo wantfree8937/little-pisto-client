@@ -28,16 +28,16 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SEnter, PacketHandler.S_EnterHandler);		
 		_onRecv.Add((ushort)MsgId.SSpawn, MakePacket<S_Spawn>);
 		_handler.Add((ushort)MsgId.SSpawn, PacketHandler.S_SpawnHandler);		
-		_onRecv.Add((ushort)MsgId.SLeave, MakePacket<S_Leave>);
-		_handler.Add((ushort)MsgId.SLeave, PacketHandler.S_LeaveHandler);		
+		// _onRecv.Add((ushort)MsgId.SLeave, MakePacket<S_Leave>);
+		// _handler.Add((ushort)MsgId.SLeave, PacketHandler.S_LeaveHandler);		
 		_onRecv.Add((ushort)MsgId.SDespawn, MakePacket<S_Despawn>);
 		_handler.Add((ushort)MsgId.SDespawn, PacketHandler.S_DespawnHandler);		
 		_onRecv.Add((ushort)MsgId.SMove, MakePacket<S_Move>);
 		_handler.Add((ushort)MsgId.SMove, PacketHandler.S_MoveHandler);		
 		_onRecv.Add((ushort)MsgId.SAnimation, MakePacket<S_Animation>);
 		_handler.Add((ushort)MsgId.SAnimation, PacketHandler.S_AnimationHandler);		
-		_onRecv.Add((ushort)MsgId.SChangeCostume, MakePacket<S_ChangeCostume>);
-		_handler.Add((ushort)MsgId.SChangeCostume, PacketHandler.S_ChangeCostumeHandler);		
+		// _onRecv.Add((ushort)MsgId.SChangeCostume, MakePacket<S_ChangeCostume>);
+		// _handler.Add((ushort)MsgId.SChangeCostume, PacketHandler.S_ChangeCostumeHandler);		
 		_onRecv.Add((ushort)MsgId.SChat, MakePacket<S_Chat>);
 		_handler.Add((ushort)MsgId.SChat, PacketHandler.S_ChatHandler);		
 		_onRecv.Add((ushort)MsgId.SEnterDungeon, MakePacket<S_EnterDungeon>);
@@ -60,6 +60,8 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SPlayerAction, PacketHandler.S_PlayerActionHandler);		
 		_onRecv.Add((ushort)MsgId.SMonsterAction, MakePacket<S_MonsterAction>);
 		_handler.Add((ushort)MsgId.SMonsterAction, PacketHandler.S_MonsterActionHandler);
+		_onRecv.Add((ushort)MsgId.SPlayerItem, MakePacket<S_PlayerItem>);
+		_handler.Add((ushort)MsgId.SPlayerItem, PacketHandler.S_PlayerItemHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

@@ -11,6 +11,11 @@ class PacketHandler
 {
 	#region Town
 
+public static void S_PlayerItemHandler(PacketSession session, IMessage packet){
+	S_PlayerItem playerItemPacket = packet as S_PlayerItem;
+	
+	Debug.Log(playerItemPacket);
+}
 	public static void S_EnterHandler(PacketSession session, IMessage packet)
 	{
         S_Enter enterPacket = packet as S_Enter;
@@ -20,7 +25,7 @@ class PacketHandler
 		TownManager.Instance.Spawn(enterPacket.Player);
 	}
 	
-	public static void S_LeaveHandler(PacketSession session, IMessage packet) { }
+	public static void S_LeaveHandler(PacketSession session, IMessage packet) {}
 	
 	public static void S_SpawnHandler(PacketSession session, IMessage packet)
 	{
