@@ -19,14 +19,19 @@ public class UICoin : MonoBehaviour
 		UpdateCoinDisplay();
 	}
 
-	private void UpdateCoinDisplay()
+    public void SpendCoins(int amount)
+    {
+        coinCount -= amount;
+        UpdateCoinDisplay();
+    }
+
+    public int GetCoinCount()
+    {
+        return coinCount;
+    }
+
+    private void UpdateCoinDisplay()
 	{
 		txtCoinCount.text = $"{coinCount}";
-	}
-
-	public void ResetCoins()
-	{
-		coinCount = 0;
-		UpdateCoinDisplay();
 	}
 }
