@@ -6,27 +6,44 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 class PacketHandler
 {
 	#region Town
 
 
-	public static void S_SelectCharacterHandler(PacketSession session, IMessage packet){
+	public static void S_SelectCharacterHandler(PacketSession session, IMessage packet)
+	{
 		S_SelectCharacter selectCharacterPacket = packet as S_SelectCharacter;
-		Debug.Log(selectCharacterPacket);
-	}
-	public static void S_PlayerItemHandler(PacketSession session, IMessage packet){
-	S_PlayerItem playerItemPacket = packet as S_PlayerItem;
-	
-	Debug.Log(playerItemPacket);
-	}
+        if (selectCharacterPacket == null)
+            return;
+
+        bool[] isUnlockedArray = selectCharacterPacket.IsUnlocked.ToArray();
+
+        TownManager.Instance.uiStart.InitializeCharacterInfos(isUnlockedArray);
+		TownManager.Instance.coinDisplay.AddCoins(selectCharacterPacket.Coin);
+        TownManager.Instance.uiStart.SetCharacterSelectionUI(selectCharacterPacket.Coin);
+    }
+
+	public static void S_PlayerItemHandler(PacketSession session, IMessage packet)
+	{
+		S_PlayerItem playerItemPacket = packet as S_PlayerItem;
+        if (playerItemPacket == null)
+            return;
+
+        TownManager.Instance.coinDisplay.SetCoins(playerItemPacket.Coin);
+		TownManager.Instance.soulDisplay.SetSouls(playerItemPacket.Soul);
+		TownManager.Instance.coinDisplay.UpdateCoinDisplay();
+        TownManager.Instance.soulDisplay.UpdateSoulDisplay();
+    }
+
 	public static void S_EnterHandler(PacketSession session, IMessage packet)
 	{
         S_Enter enterPacket = packet as S_Enter;
         if (enterPacket == null)
 	        return;
-		Debug.Log(enterPacket);
+
 		TownManager.Instance.Spawn(enterPacket.Player);
 	}
 	

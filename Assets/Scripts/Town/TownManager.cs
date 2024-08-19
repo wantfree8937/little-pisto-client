@@ -22,7 +22,7 @@ public class TownManager : MonoBehaviour
     
     public Player myPlayer { get; private set; }
     
-    [SerializeField] private UIStart uiStart;
+    [SerializeField] public UIStart uiStart;
     [SerializeField] private UIAnimation uiAnimation;
     [SerializeField] private UIChat uiChat;
     [SerializeField] public UICoin coinDisplay;
@@ -66,11 +66,18 @@ public class TownManager : MonoBehaviour
 
     public void GameStart(string gameServer, string port, string userName, int classIdx)
     {
-        GameManager.Network.Init(gameServer, port);
+        // GameManager.Network.Init(gameServer, port);
+
         GameManager.Instance.UserName = userName;
         GameManager.Instance.ClassIdx = classIdx + 1001;
-        coinDisplay.AddCoins(classIdx);
-        soulDisplay.AddSouls(classIdx);
+
+        C_Enter enterPacket = new C_Enter
+        {
+            Nickname = GameManager.Instance.UserName,
+            Class = GameManager.Instance.ClassIdx
+        };
+
+        GameManager.Network.Send(enterPacket);
 
         Debug.Log("Sparta@@@@@"+GameManager.Instance.ClassIdx);
 
@@ -79,12 +86,11 @@ public class TownManager : MonoBehaviour
 
     public void Connected()
     {
-        C_Enter enterPacket = new C_Enter
+        C_Login enterPacket = new C_Login
         {
             Nickname = GameManager.Instance.UserName,
-            Class = GameManager.Instance.ClassIdx
         };
-        
+
         GameManager.Network.Send(enterPacket);
     }
 

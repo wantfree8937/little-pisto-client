@@ -1,6 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using Google.Protobuf.Protocol;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,7 +10,6 @@ public class CharacterInfo
 {
     public string Name;
     public int UnlockCost;
-
     public GameObject LockedImage;
     public GameObject UnlockedImage;
 
@@ -23,7 +22,6 @@ public class CharacterInfo
     }
 }
 
-
 public class UIStart : MonoBehaviour
 {
     [SerializeField] private GameObject charList;
@@ -35,6 +33,9 @@ public class UIStart : MonoBehaviour
     [SerializeField] private TMP_InputField inputNickname;
     [SerializeField] private TMP_InputField inputPort;
     [SerializeField] private TMP_Text txtMessage;
+
+    [SerializeField] private GameObject userCoinBox;
+    [SerializeField] private TMP_Text coinMessage;
     private TMP_Text placeHolder;
 
     [SerializeField] private GameObject popupPanel;
@@ -47,8 +48,7 @@ public class UIStart : MonoBehaviour
     [SerializeField] private TMP_Text insufficientCoinsMessage;
     [SerializeField] private Button insufficientCoinsConfirmButton;
 
-    private int classIdx = 0;
-
+    public int classIdx = 0;
     private string serverUrl;
     private string nickname;
     private string port;
@@ -59,32 +59,11 @@ public class UIStart : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("UIStart: Start() called");
-
         placeHolder = inputNickname.placeholder.GetComponent<TMP_Text>();
         btnBack1.onClick.AddListener(SetServerUI);
 
-        InitializeCharacterInfos();
-
-        for (int i = 0; i < charBtns.Length; i++)
-        {
-            int idx = i;
-            charBtns[i].onClick.AddListener(() => OnCharacterButtonClick(idx));
-
-            // 초기 이미지 설정
-            if (isCharacterUnlocked[i])
-            {
-                characterInfos[idx].LockedImage.SetActive(false);
-                characterInfos[idx].UnlockedImage.SetActive(true);
-            }
-            else
-            {
-                characterInfos[idx].LockedImage.SetActive(true);
-                characterInfos[idx].UnlockedImage.SetActive(false);
-            }
-        }
-
-        Debug.Log("UIStart: Character buttons initialized");
+        InitializeCharacterInfos(new bool[charBtns.Length]); // 기본적으로 모든 캐릭터 잠금
+        InitializeCharacterButtons();
 
         popupConfirmButton.onClick.AddListener(() =>
         {
@@ -93,7 +72,6 @@ public class UIStart : MonoBehaviour
         });
 
         popupCancelButton.onClick.AddListener(ClosePopup);
-
         insufficientCoinsConfirmButton.onClick.AddListener(CloseInsufficientCoinsPopup);
 
         SetServerUI();
@@ -101,14 +79,13 @@ public class UIStart : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Return))
+        if (Input.GetKeyUp(KeyCode.Return) && inputNickname.IsActive())
         {
-            if (inputNickname.IsActive())
-                btnConfirm1.onClick.Invoke();
+            btnConfirm1.onClick.Invoke();
         }
     }
 
-    void InitializeCharacterInfos()
+    public void InitializeCharacterInfos(bool[] isUnlocked)
     {
         characterInfos = new Dictionary<int, CharacterInfo>
         {
@@ -119,24 +96,38 @@ public class UIStart : MonoBehaviour
             { 4, new CharacterInfo("미호", 100, charBtns[4].transform.Find("LockedImage").gameObject, charBtns[4].transform.Find("UnlockedImage").gameObject) },
             { 5, new CharacterInfo("레비", 300, charBtns[5].transform.Find("LockedImage").gameObject, charBtns[5].transform.Find("UnlockedImage").gameObject) },
             { 6, new CharacterInfo("와이브", 300, charBtns[6].transform.Find("LockedImage").gameObject, charBtns[6].transform.Find("UnlockedImage").gameObject) },
-            { 7, new CharacterInfo("드라고", 500,charBtns[7].transform.Find("LockedImage").gameObject, charBtns[7].transform.Find("UnlockedImage").gameObject) },
-            { 8, new CharacterInfo("키리", 500, charBtns[8].transform.Find("LockedImage").gameObject, charBtns[8].transform.Find("UnlockedImage").gameObject) },
-            // 나머지 캐릭터들도 동일하게 설정
+            { 7, new CharacterInfo("드라고", 500, charBtns[7].transform.Find("LockedImage").gameObject, charBtns[7].transform.Find("UnlockedImage").gameObject) },
+            { 8, new CharacterInfo("키리", 500, charBtns[8].transform.Find("LockedImage").gameObject, charBtns[8].transform.Find("UnlockedImage").gameObject) }
         };
 
-        isCharacterUnlocked = new bool[charBtns.Length];
-        for (int i = 0; i < isCharacterUnlocked.Length; i++)
-        {
-            isCharacterUnlocked[i] = (i < 3);
-        }
+        isCharacterUnlocked = isUnlocked;
 
-        Debug.Log("UIStart: Initial character unlock status and infos set");
+        for (int i = 0; i < charBtns.Length; i++)
+        {
+            if (isCharacterUnlocked[i])
+            {
+                characterInfos[i].LockedImage.SetActive(false);
+                characterInfos[i].UnlockedImage.SetActive(true);
+            }
+            else
+            {
+                characterInfos[i].LockedImage.SetActive(true);
+                characterInfos[i].UnlockedImage.SetActive(false);
+            }
+        }
+    }
+
+    private void InitializeCharacterButtons()
+    {
+        for (int i = 0; i < charBtns.Length; i++)
+        {
+            int idx = i;
+            charBtns[i].onClick.AddListener(() => OnCharacterButtonClick(idx));
+        }
     }
 
     void OnCharacterButtonClick(int idx)
     {
-        Debug.Log($"UIStart: OnCharacterButtonClick({idx}) called");
-
         if (isCharacterUnlocked[idx])
         {
             SelectCharacter(idx);
@@ -149,47 +140,44 @@ public class UIStart : MonoBehaviour
 
     void SelectCharacter(int idx)
     {
-        Debug.Log($"UIStart: SelectCharacter({idx}) called");
-
-        // 이전에 선택된 캐릭터의 테두리를 비활성화
         charBtns[classIdx].transform.Find("Border").gameObject.SetActive(false);
-
-        // 새로운 캐릭터의 인덱스를 저장
         classIdx = idx;
-
-        // 현재 선택된 캐릭터의 테두리를 활성화
         charBtns[classIdx].transform.Find("Border").gameObject.SetActive(true);
     }
 
-
     void ConfirmUnlockCharacter(int idx)
     {
-        Debug.Log($"UIStart: ConfirmUnlockCharacter({idx}) called");
-
         if (characterInfos.TryGetValue(idx, out CharacterInfo characterInfo))
         {
             ShowPopup(
                 $"{characterInfo.Name}을(를) {characterInfo.UnlockCost} 코인으로 잠금 해제하시겠습니까?",
-                () => {
+                () =>
+                {
                     if (TownManager.Instance.coinDisplay.GetCoinCount() >= characterInfo.UnlockCost)
                     {
-                        Debug.Log($"UIStart: Character {idx} unlocked with {characterInfo.UnlockCost} coins");
+                        GameManager.Instance.ClassIdx = idx + 1000;
                         TownManager.Instance.coinDisplay.SpendCoins(characterInfo.UnlockCost);
+                        coinMessage.text = $"{TownManager.Instance.coinDisplay.coinCount}";
+                        C_Unlock_Character unlockPacket = new C_Unlock_Character
+                        {
+                            Nickname = GameManager.Instance.UserName,
+                            Class = GameManager.Instance.ClassIdx,
+                            Coin = TownManager.Instance.coinDisplay.coinCount
+                        };
+
+                        GameManager.Network.Send(unlockPacket);
                         UnlockCharacter(idx);
                     }
                     else
                     {
                         ShowInsufficientCoinsPopup("코인이 부족합니다!");
                     }
-                }
-            );
+                });
         }
     }
 
     void UnlockCharacter(int idx)
     {
-        Debug.Log($"UIStart: UnlockCharacter({idx}) called");
-
         isCharacterUnlocked[idx] = true;
         charBtns[idx].interactable = true;
 
@@ -200,57 +188,45 @@ public class UIStart : MonoBehaviour
         }
 
         SelectCharacter(idx);
-        Debug.Log($"UIStart: Character {idx} unlocked and selected");
     }
 
     void SetServerUI()
     {
-        Debug.Log("UIStart: SetServerUI() called");
-
-        txtMessage.color = Color.white;
+        txtMessage.color = UnityEngine.Color.white;
         txtMessage.text = "Welcome!";
-
         inputNickname.text = string.Empty;
         placeHolder.text = "서버주소를 입력해주세요!";
-
-        charList.gameObject.SetActive(false);
+        charList.SetActive(false);
         btnBack1.gameObject.SetActive(false);
         inputPort.gameObject.SetActive(true);
-
         btnConfirm1.onClick.RemoveAllListeners();
         btnConfirm1.onClick.AddListener(ConfirmServer);
     }
 
     void SetNicknameUI()
     {
-        Debug.Log("UIStart: SetNicknameUI() called");
-
-        txtMessage.color = Color.white;
+        txtMessage.color = UnityEngine.Color.white;
         txtMessage.text = "닉네임을 설정해주세요";
-
         inputNickname.text = string.Empty;
         placeHolder.text = "닉네임을 입력해주세요 (2~10글자)";
-
-        charList.gameObject.SetActive(false);
+        charList.SetActive(false);
         btnBack1.gameObject.SetActive(true);
         inputPort.gameObject.SetActive(false);
-
         btnConfirm1.onClick.RemoveAllListeners();
         btnConfirm1.onClick.AddListener(ConfirmNickname);
     }
 
-    void SetCharacterSelectionUI()
+    public void SetCharacterSelectionUI(int coin)
     {
-        Debug.Log("UIStart: SetCharacterSelectionUI() called");
-
-        txtMessage.color = Color.white;
+        txtMessage.color = UnityEngine.Color.white;
         txtMessage.text = "캐릭터를 선택해주세요";
-
-        charList.gameObject.SetActive(true);
+        charList.SetActive(true);
         btnBack1.gameObject.SetActive(false);
-
         inputNickname.gameObject.SetActive(false);
         inputPort.gameObject.SetActive(false);
+        userCoinBox.SetActive(true);
+
+        coinMessage.text = $"{coin}";
 
         btnConfirm2.onClick.RemoveAllListeners();
         btnConfirm2.onClick.AddListener(StartGame);
@@ -258,8 +234,6 @@ public class UIStart : MonoBehaviour
 
     void ConfirmServer()
     {
-        Debug.Log("UIStart: ConfirmServer() called");
-
         serverUrl = inputNickname.text;
         port = inputPort.text;
         SetNicknameUI();
@@ -267,10 +241,6 @@ public class UIStart : MonoBehaviour
 
     void ConfirmNickname()
     {
-        Debug.Log("UIStart: ConfirmNickname() called");
-
-        txtMessage.color = Color.red;
-
         if (inputNickname.text.Length < 2)
         {
             txtMessage.text = "이름을 2글자 이상 입력해주세요!";
@@ -286,15 +256,14 @@ public class UIStart : MonoBehaviour
         }
 
         nickname = inputNickname.text;
+        GameManager.Instance.UserName = nickname;
         Debug.Log($"UIStart: Nickname confirmed: {nickname}");
 
-        SetCharacterSelectionUI();
+        GameManager.Network.Init(serverUrl, port);
     }
 
     void StartGame()
     {
-        Debug.Log($"UIStart: StartGame() called with classIdx = {classIdx}");
-
         TownManager.Instance.GameStart(serverUrl, port, nickname, classIdx);
         gameObject.SetActive(false);
     }

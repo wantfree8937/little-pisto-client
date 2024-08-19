@@ -5,15 +5,21 @@ using UnityEngine;
 
 public class UICoin : MonoBehaviour
 {
-	[SerializeField] private TMP_Text txtCoinCount;
+	[SerializeField] public TMP_Text txtCoinCount;
 
-	private int coinCount;
+	public int coinCount;
 
 	void Start()
 	{
 	}
 
-	public void AddCoins(int amount)
+    public void SetCoins(int amount)
+    {
+        coinCount = amount;
+        UpdateCoinDisplay();
+    }
+
+    public void AddCoins(int amount)
 	{
 		coinCount += amount;
 		UpdateCoinDisplay();
@@ -30,7 +36,7 @@ public class UICoin : MonoBehaviour
         return coinCount;
     }
 
-    private void UpdateCoinDisplay()
+    public void UpdateCoinDisplay()
 	{
 		txtCoinCount.text = $"{coinCount}";
 	}

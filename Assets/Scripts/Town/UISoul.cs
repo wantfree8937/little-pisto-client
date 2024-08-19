@@ -5,26 +5,37 @@ using UnityEngine;
 
 public class UISoul : MonoBehaviour
 {
-	[SerializeField] private TMP_Text txtSoulCount;
+	[SerializeField] public TMP_Text txtSoulCount;
 
-	private int soulCount;
+    public int soulCount;
 
 	void Start()
 	{
 	}
 
-	public void AddSouls(int amount)
+    public void SetSouls(int amount)
+    {
+        soulCount = amount;
+        UpdateSoulDisplay();
+    }
+
+    public void AddSouls(int amount)
 	{
 		soulCount += amount;
 		UpdateSoulDisplay();
 	}
 
-	private void UpdateSoulDisplay()
+    public void UpdateSoulDisplay()
 	{
 		txtSoulCount.text = $"{soulCount}";
 	}
 
-	public void ResetSouls()
+    public int GetSoulCount()
+    {
+        return soulCount;
+    }
+
+    public void ResetSouls()
 	{
 		soulCount = 0;
 		UpdateSoulDisplay();
