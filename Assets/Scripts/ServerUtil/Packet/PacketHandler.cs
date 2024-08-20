@@ -29,7 +29,7 @@ class PacketHandler
         bool[] isUnlockedArray = selectCharacterPacket.IsUnlocked.ToArray();
 
         TownManager.Instance.uiStart.InitializeCharacterInfos(isUnlockedArray);
-		TownManager.Instance.coinDisplay.AddCoins(selectCharacterPacket.Coin);
+		TownManager.Instance.coinDisplay.SetCoins(selectCharacterPacket.Coin);
         TownManager.Instance.uiStart.SetCharacterSelectionUI(selectCharacterPacket.Coin);
     }
 
@@ -38,7 +38,7 @@ class PacketHandler
 		S_PlayerItem playerItemPacket = packet as S_PlayerItem;
         if (playerItemPacket == null)
             return;
-
+		
         TownManager.Instance.coinDisplay.SetCoins(playerItemPacket.Coin);
 		TownManager.Instance.soulDisplay.SetSouls(playerItemPacket.Soul);
 		TownManager.Instance.coinDisplay.UpdateCoinDisplay();
@@ -165,9 +165,11 @@ class PacketHandler
 		S_LeaveDungeon pkt = packet as S_LeaveDungeon;
 		if (pkt == null)
 			return;
-		
+
+		int ClassIdx = GameManager.Instance.ClassIdx - 1001;
+
 		SceneManager.LoadScene(GameManager.TownScene);
-        TownManager.Instance.uiStart.StartGame(false);
+        TownManager.Instance.uiStart.StartGame(false, ClassIdx);
     }
 	
 	public static void S_ScreenTextHandler(PacketSession session, IMessage packet)

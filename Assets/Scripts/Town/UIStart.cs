@@ -155,18 +155,15 @@ public class UIStart : MonoBehaviour
                 {
                     if (TownManager.Instance.coinDisplay.GetCoinCount() >= characterInfo.UnlockCost)
                     {
-                        GameManager.Instance.ClassIdx = idx + 1000;
-                        TownManager.Instance.coinDisplay.SpendCoins(characterInfo.UnlockCost);
-                        coinMessage.text = $"{TownManager.Instance.coinDisplay.coinCount}";
+                        // coinMessage.text = $"{TownManager.Instance.coinDisplay.coinCount - characterInfo.UnlockCost}";
                         C_Unlock_Character unlockPacket = new C_Unlock_Character
                         {
                             Nickname = GameManager.Instance.UserName,
-                            Class = GameManager.Instance.ClassIdx,
-                            Coin = TownManager.Instance.coinDisplay.coinCount
+                            Class = idx + 1000,
+                            Coin = TownManager.Instance.coinDisplay.coinCount,
                         };
 
                         GameManager.Network.Send(unlockPacket);
-                        UnlockCharacter(idx);
                     }
                     else
                     {
@@ -176,7 +173,7 @@ public class UIStart : MonoBehaviour
         }
     }
 
-    void UnlockCharacter(int idx)
+    public void UnlockCharacter(int idx)
     {
         isCharacterUnlocked[idx] = true;
         charBtns[idx].interactable = true;
@@ -262,10 +259,12 @@ public class UIStart : MonoBehaviour
         GameManager.Network.Init(serverUrl, port);
     }
 
-    public void StartGame(bool deactivateObject = true)
+    public void StartGame(bool deactivateObject = true, int? providedClassIdx = null)
     {
         nickname = GameManager.Instance.UserName;
+        classIdx = providedClassIdx ?? classIdx;
         TownManager.Instance.GameStart(serverUrl, port, nickname, classIdx);
+
         if (deactivateObject)
         {
             gameObject.SetActive(false);

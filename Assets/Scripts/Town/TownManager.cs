@@ -81,13 +81,13 @@ public class TownManager : MonoBehaviour
 
         GameManager.Network.Send(enterPacket);
 
-        Debug.Log("Sparta@@@@@"+GameManager.Instance.ClassIdx);
+        Debug.Log("Sparta@@@@@" + GameManager.Instance.ClassIdx);
 
         txtServer.text = gameServer;
     }
 
     public void Connected()
-    {        
+    {
         C_Login enterPacket = new C_Login
         {
             Nickname = GameManager.Instance.UserName,
