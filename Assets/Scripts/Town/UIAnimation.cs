@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UIAnimation : MonoBehaviour
 {
     [SerializeField] private Button btnBattle;
     [SerializeField] private Button[] btnList;
+    [SerializeField] private Button character_Select;
     private MyPlayer mPlayer;
     
     void Start()
@@ -22,6 +24,8 @@ public class UIAnimation : MonoBehaviour
         }
         
         mPlayer = TownManager.Instance.myPlayer.mPlayer;
+
+        character_Select.onClick.AddListener(OnCharacterSelect);
     }
     
     private void PlayAnimation(int idx)
@@ -30,5 +34,10 @@ public class UIAnimation : MonoBehaviour
             return;
 
         mPlayer.AnimationExecute(idx);
+    }
+
+    private void OnCharacterSelect()
+    {
+        SceneManager.LoadScene(GameManager.TownScene);
     }
 }

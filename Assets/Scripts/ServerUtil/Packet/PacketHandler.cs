@@ -160,7 +160,8 @@ class PacketHandler
 			return;
 		
 		SceneManager.LoadScene(GameManager.TownScene);
-	}
+        TownManager.Instance.uiStart.StartGame(false);
+    }
 	
 	public static void S_ScreenTextHandler(PacketSession session, IMessage packet)
 	{

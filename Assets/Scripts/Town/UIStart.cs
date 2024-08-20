@@ -229,7 +229,7 @@ public class UIStart : MonoBehaviour
         coinMessage.text = $"{coin}";
 
         btnConfirm2.onClick.RemoveAllListeners();
-        btnConfirm2.onClick.AddListener(StartGame);
+        btnConfirm2.onClick.AddListener(() => StartGame());
     }
 
     void ConfirmServer()
@@ -262,10 +262,14 @@ public class UIStart : MonoBehaviour
         GameManager.Network.Init(serverUrl, port);
     }
 
-    void StartGame()
+    public void StartGame(bool deactivateObject = true)
     {
+        nickname = GameManager.Instance.UserName;
         TownManager.Instance.GameStart(serverUrl, port, nickname, classIdx);
-        gameObject.SetActive(false);
+        if (deactivateObject)
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     void ShowInsufficientCoinsPopup(string message)
