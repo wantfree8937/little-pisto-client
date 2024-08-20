@@ -13,6 +13,11 @@ class PacketHandler
 	#region Town
 
 
+public static void S_PlayerUpgradeHandler (PacketSession session, IMessage packet)
+{
+	S_PlayerUpgrade playerUpgradePacket = packet as S_PlayerUpgrade;
+	Debug.Log("TestCode #47::"+ playerUpgradePacket);
+}
 	public static void S_SelectCharacterHandler(PacketSession session, IMessage packet)
 	{
 		S_SelectCharacter selectCharacterPacket = packet as S_SelectCharacter;
