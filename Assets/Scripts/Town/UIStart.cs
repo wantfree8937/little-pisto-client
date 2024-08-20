@@ -155,7 +155,6 @@ public class UIStart : MonoBehaviour
                 {
                     if (TownManager.Instance.coinDisplay.GetCoinCount() >= characterInfo.UnlockCost)
                     {
-                        // coinMessage.text = $"{TownManager.Instance.coinDisplay.coinCount - characterInfo.UnlockCost}";
                         C_Unlock_Character unlockPacket = new C_Unlock_Character
                         {
                             Nickname = GameManager.Instance.UserName,
@@ -173,10 +172,13 @@ public class UIStart : MonoBehaviour
         }
     }
 
-    public void UnlockCharacter(int idx)
+    public void UnlockCharacter(int idx, int coin)
     {
         isCharacterUnlocked[idx] = true;
         charBtns[idx].interactable = true;
+
+        TownManager.Instance.coinDisplay.SetCoins(coin);
+        coinMessage.text = $"{coin}";
 
         if (characterInfos.TryGetValue(idx, out CharacterInfo characterInfo))
         {

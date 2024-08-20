@@ -13,16 +13,22 @@ class PacketHandler
 	#region Town
 
 
-public static void S_UnlockCharacterHandler (PacketSession session, IMessage packet){
+	public static void S_UnlockCharacterHandler (PacketSession session, IMessage packet)
+	{
+		S_UnlockCharacter playerUnlockPacket = packet as S_UnlockCharacter;
+        if (playerUnlockPacket == null)
+            return;
 
-	S_UnlockCharacter playerUnlockPacket = packet as S_UnlockCharacter;
-	Debug.Log(playerUnlockPacket);
-}
+		TownManager.Instance.uiStart.UnlockCharacter(playerUnlockPacket.Idx, playerUnlockPacket.Coin);
+    }
+
 	public static void S_PlayerUpgradeHandler (PacketSession session, IMessage packet)
 	{
 		S_PlayerUpgrade playerUpgradePacket = packet as S_PlayerUpgrade;
+        if (playerUpgradePacket == null)
+            return;
 
-		TownManager.Instance.uiShrine.UpdateStatOnServer(playerUpgradePacket);
+        TownManager.Instance.uiShrine.UpdateStatOnServer(playerUpgradePacket);
     }
 
 	public static void S_SelectCharacterHandler(PacketSession session, IMessage packet)
