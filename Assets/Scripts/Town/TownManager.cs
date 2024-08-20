@@ -28,6 +28,7 @@ public class TownManager : MonoBehaviour
     [SerializeField] public UICoin coinDisplay;
     [SerializeField] public UISoul soulDisplay;
     [SerializeField] public GaugeBar gaugeBar;
+    [SerializeField] public UIShrine uiShrine;
 
     public UIChat UiChat => uiChat;
     

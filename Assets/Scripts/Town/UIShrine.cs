@@ -6,6 +6,16 @@ using Google.Protobuf.Protocol;
 
 public class UIShrine : MonoBehaviour
 {
+    // StatInfo 구조체 정의
+    [Serializable]
+    public struct StatInfo
+    {
+        public int Level;
+        public float MaxHp;
+        public float Atk;
+        public float Magic;
+    }
+
     [SerializeField] private TMP_Text txtCurrStat;
     [SerializeField] private TMP_Text txtNextStat;
     [SerializeField] private TMP_Text txtUpGradeSoul;
@@ -16,16 +26,18 @@ public class UIShrine : MonoBehaviour
     [SerializeField] private Button lastStageBtn;
     [SerializeField] private GameObject arrowGroup;
 
-    private int currStat;
-    private int nextStat;
+    private StatInfo currStat;  // 현재 스탯
+    private StatInfo nextStat;  // 다음 스탯
     private int soulAmount;
-    private int upgradeCost = 2;
-    private int ritualLevel = 10;
+    private int upgradeCost;
+    private int ritualLevel;
+    private ImagePulse arrowGroupPulse;
 
     void Start()
     {
         // 초기화
         upgradeBtn.onClick.AddListener(OnUpgradeButtonClicked);
+        lastStageBtn.onClick.AddListener(OnLastStageButtonClicked);
 
         soulAmount = TownManager.Instance.soulDisplay.GetSoulCount();
         TownManager.Instance.gaugeBar.gaugeStart = ritualLevel;
@@ -34,20 +46,42 @@ public class UIShrine : MonoBehaviour
         ritualGaugeBar.minValue = 0; // 최소값
         ritualGaugeBar.maxValue = 50; // 최대값
 
-        // 게이지 바 갱신
-        UpdateRitualGauge();
+        arrowGroupPulse = arrowGroup.GetComponent<ImagePulse>();
 
         // 마을에 입장할 때 한번 갱신
         UpdateShrineUI();
     }
 
+    void OnEnable()
+    {
+        // UIShrine이 활성화될 때 애니메이션 시작
+        if (arrowGroup.activeSelf && arrowGroupPulse != null)
+        {
+            arrowGroupPulse.StartPulsing(); // arrowGroup이 활성화된 상태라면 애니메이션 시작
+        }
+    }
+
+    void OnDisable()
+    {
+        // UIShrine이 비활성화될 때 애니메이션 중지
+        if (arrowGroupPulse != null)
+        {
+            arrowGroupPulse.StopPulsing(); // 창이 닫히면 애니메이션 중지
+        }
+    }
+
     // UI 갱신 함수
     public void UpdateShrineUI()
     {
-        txtCurrStat.text = $"{currStat}";
-        txtNextStat.text = $"{nextStat}";
+        // 현재 스탯과 다음 스탯을 텍스트로 표시
+        txtCurrStat.text = $"LV: {currStat.Level}\n\nHP: {currStat.MaxHp}\n\nATK: {currStat.Atk}\n\nMAG: {currStat.Magic}";
+        txtNextStat.text = $"LV: {nextStat.Level}\n\nHP: {nextStat.MaxHp}\n\nATK: {nextStat.Atk}\n\nMAG: {nextStat.Magic}";
+
         txtUpGradeSoul.text = $"{upgradeCost}";
         txtSoulMessage.text = $"{soulAmount}";
+
+        // 소울 갱신
+        TownManager.Instance.soulDisplay.SetSouls(soulAmount);
 
         // 게이지 바 갱신
         UpdateRitualGauge();
@@ -69,32 +103,29 @@ public class UIShrine : MonoBehaviour
     {
         if (soulAmount >= upgradeCost)
         {
-            // 소울을 사용하여 스탯을 업그레이드
-            soulAmount -= upgradeCost;
+            // 업데이트된 정보를 서버로 전송
+            C_PlayerUpgrade soulPacket = new C_PlayerUpgrade {};
 
-            ritualLevel++;
-
-            /* 
-
-             현재 스탯, 다음 스탯 바꾸는 부분
-
-             */
-
-            // 소울 갱신
-            TownManager.Instance.soulDisplay.SetSouls(soulAmount);
-
-            /* 업데이트된 정보를 서버로 전송
-            
-            이곳에 작성
-            
-             */
-
-            // UI 갱신은 받은 패킷핸들러에서 사용
-            UpdateShrineUI();
+            Debug.Log(soulPacket);
+            GameManager.Network.Send(soulPacket);
         }
         else
         {
             Debug.Log("영혼이 부족합니다");
+        }
+    }
+
+    private void OnLastStageButtonClicked()
+    {
+        if (lastStageBtn.gameObject.activeSelf)
+        {
+            // 서버로 특정 패킷을 전송
+            C_EnterFinal lastStagePacket = new C_EnterFinal
+            {
+                DungeonCode = 5,
+            };
+
+            GameManager.Network.Send(lastStagePacket);
         }
     }
 
@@ -107,46 +138,39 @@ public class UIShrine : MonoBehaviour
             ritualGaugeBar.value = ritualLevel;
 
             // 게이지가 최대값에 도달하면 라스트 스테이지 버튼을 활성화
-            if (ritualGaugeBar.value >= ritualGaugeBar.maxValue)
-            {
-                lastStageBtn.gameObject.SetActive(true);
-                arrowGroup.gameObject.SetActive(true);
-            }
-            else
-            {
-                lastStageBtn.gameObject.SetActive(false);
-                arrowGroup.gameObject.SetActive(false);
-            }
+            bool isMaxLevel = ritualGaugeBar.value >= ritualGaugeBar.maxValue;
+            lastStageBtn.gameObject.SetActive(isMaxLevel);
+            arrowGroup.SetActive(isMaxLevel);
         }
     }
 
-    // 현재 스탯 가져오기
-    private int GetCurrentStatFromServer()
+    // 서버에서 받은 패킷을 통해 현재 스탯과 다음 스탯을 업데이트하는 함수
+    public void UpdateStatOnServer(S_PlayerUpgrade packet)
     {
-        return currStat;
-    }
+        // 현재 스탯을 업데이트
+        currStat = new StatInfo
+        {
+            Level = packet.Player.StatInfo.Level,
+            MaxHp = packet.Player.StatInfo.MaxHp,
+            Atk = packet.Player.StatInfo.Atk,
+            Magic = packet.Player.StatInfo.Magic
+        };
 
-    // 다음 스탯 가져오기
-    private int GetNextStatFromServer()
-    {
-        return nextStat;
-    }
+        // 다음 스탯을 업데이트
+        nextStat = new StatInfo
+        {
+            Level = packet.Next.Level,
+            MaxHp = packet.Next.Hp,
+            Atk = packet.Next.Atk,
+            Magic = packet.Next.Mag
+        };
 
-    // 소울 코스트 가져오기
-    private int GetUpgradeCostFromServer()
-    {
-        return upgradeCost;
-    }
 
-    // 현재 소울 가져오기
-    private int GetSoulAmountFromServer()
-    {
-        return soulAmount;
-    }
-
-    // 서버에서 가져온 정보를 업데이트 하는 함수
-    private void UpdateStatOnServer()
-    {
-
+        soulAmount = packet.Soul;
+        upgradeCost = packet.UpgradeCost;
+        ritualLevel = packet.RitualLevel;
+       
+        // UI 업데이트
+        UpdateShrineUI();
     }
 }
