@@ -13,6 +13,11 @@ class PacketHandler
 	#region Town
 
 
+public static void S_UnlockCharacterHandler (PacketSession session, IMessage packet){
+
+	S_UnlockCharacter playerUnlockPacket = packet as S_UnlockCharacter;
+	Debug.Log(playerUnlockPacket);
+}
 	public static void S_PlayerUpgradeHandler (PacketSession session, IMessage packet)
 	{
 		S_PlayerUpgrade playerUpgradePacket = packet as S_PlayerUpgrade;
