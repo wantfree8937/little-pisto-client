@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Google.Protobuf.Protocol;
 
 public class UIAnimation : MonoBehaviour
 {
@@ -38,6 +39,9 @@ public class UIAnimation : MonoBehaviour
 
     private void OnCharacterSelect()
     {
+        C_TownSelect c_TownSelect = new C_TownSelect {};
+        GameManager.Network.Send(c_TownSelect);
+
         SceneManager.LoadScene(GameManager.TownScene);
     }
 }
