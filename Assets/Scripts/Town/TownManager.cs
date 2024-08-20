@@ -85,13 +85,23 @@ public class TownManager : MonoBehaviour
     }
 
     public void Connected()
-    {
+    {        
+
         C_Login enterPacket = new C_Login
         {
             Nickname = GameManager.Instance.UserName,
         };
 
         GameManager.Network.Send(enterPacket);
+
+        
+        C_PlayerUpgrade upgradePacket = new C_PlayerUpgrade
+        {
+            Soul = TownManager.Instance.soulDisplay.GetSoulCount()
+        };
+
+        GameManager.Network.Send(upgradePacket);
+
     }
 
     public void Spawn(PlayerInfo playerInfo)

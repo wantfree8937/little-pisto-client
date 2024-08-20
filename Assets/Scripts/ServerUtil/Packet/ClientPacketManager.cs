@@ -64,6 +64,8 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SPlayerItem, PacketHandler.S_PlayerItemHandler);
 		_onRecv.Add((ushort)MsgId.SSelectCharacter, MakePacket<S_SelectCharacter>);
 		_handler.Add((ushort)MsgId.SSelectCharacter, PacketHandler.S_SelectCharacterHandler);
+		_onRecv.Add((ushort)MsgId.SPlayerUpgrade, MakePacket<S_PlayerUpgrade>);
+		_handler.Add((ushort)MsgId.SPlayerUpgrade, PacketHandler.S_PlayerUpgradeHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)
