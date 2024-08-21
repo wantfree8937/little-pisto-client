@@ -18,7 +18,12 @@ class PacketHandler
         if (ConnectPacket == null)
             return;
 
-		TownManager.Instance.uiStart.ConfirmServer("127.0.0.1", "3000");
+        TownManager.Instance.uiStart.ConfirmServer("127.0.0.1", "3000");
+
+        if (!string.IsNullOrEmpty(GameManager.Instance.UserName) && !string.IsNullOrEmpty(GameManager.Instance.PassWord))
+        {
+            TownManager.Instance.uiStart.LoginServer(GameManager.Instance.UserName, GameManager.Instance.PassWord);
+        }
     }
 
     public static void S_LoginHandler(PacketSession session, IMessage packet)
@@ -32,7 +37,6 @@ class PacketHandler
             // true일 때 실행할 로직
             bool[] isUnlockedArray = LoginPacket.IsUnlocked.ToArray();
             TownManager.Instance.uiStart.InitializeCharacterInfos(isUnlockedArray);
-            TownManager.Instance.uiStart.ConfirmLogin();
             TownManager.Instance.coinDisplay.SetCoins(LoginPacket.Coin);
             TownManager.Instance.uiStart.SetCharacterSelectionUI(LoginPacket.Coin);
         }

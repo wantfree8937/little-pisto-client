@@ -311,7 +311,6 @@ public class UIStart : MonoBehaviour
         {
             txtMessage2.color = UnityEngine.Color.red;
             txtMessage2.text = "닉네임은 2~10글자여야 합니다!";
-            Debug.Log("UIStart: Nickname length is invalid");
             return;
         }
 
@@ -319,7 +318,6 @@ public class UIStart : MonoBehaviour
         {
             txtMessage2.color = UnityEngine.Color.red;
             txtMessage2.text = "비밀번호는 6글자 이상이어야 합니다!";
-            Debug.Log("UIStart: Password is too short");
             return;
         }
 
@@ -335,15 +333,18 @@ public class UIStart : MonoBehaviour
         }
     }
 
-    void LoginServer(string nick, string pw)
+    public void LoginServer(string nick, string pw)
     {
-       C_Login loginPacket = new C_Login 
-       {
-           Nickname = nick,
-           Password = pw,
-       };
+        C_Login loginPacket = new C_Login 
+        {
+            Nickname = nick,
+            Password = pw,
+        };
 
-       GameManager.Network.Send(loginPacket);
+        GameManager.Instance.UserName = nick;
+        GameManager.Instance.PassWord = pw;
+
+        GameManager.Network.Send(loginPacket);
     }
 
     void RegisterServer(string nick, string pw)
@@ -394,13 +395,6 @@ public class UIStart : MonoBehaviour
         port = serverPort;
         loginWindow.gameObject.SetActive(true);
         SetLoginUI();
-    }
-
-    public void ConfirmLogin()
-    {
-        nickname = inputNickname.text;
-        GameManager.Instance.UserName = nickname;
-        Debug.Log($"UIStart: Nickname confirmed: {nickname}");
     }
 
     public void ConfirmRegister()
