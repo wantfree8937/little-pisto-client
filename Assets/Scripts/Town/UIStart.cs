@@ -31,14 +31,16 @@ public class UIStart : MonoBehaviour
     [SerializeField] private Button btnConfirm2;
     [SerializeField] private Button btnConfirm3;
     [SerializeField] private Button btnRegister;
-    [SerializeField] private Button btnBack1;
-    [SerializeField] private GameObject loginWindow;
+    [SerializeField] private Button btnSucFail;
+    [SerializeField] public  GameObject loginWindow;
+    [SerializeField] private GameObject SucFailBox;
     [SerializeField] private TMP_InputField inputServer;
     [SerializeField] private TMP_InputField inputNickname;
     [SerializeField] private TMP_InputField inputPassword;
     [SerializeField] private TMP_InputField inputPort;
     [SerializeField] private TMP_Text txtMessage1;
     [SerializeField] private TMP_Text txtMessage2;
+    [SerializeField] private TMP_Text txtSucFail;
     [SerializeField] private TMP_Text txtRegisterLogin;
     [SerializeField] private TMP_Text txtloginRegisterTitle;
 
@@ -73,7 +75,6 @@ public class UIStart : MonoBehaviour
         placeHolder1 = inputServer.placeholder.GetComponent<TMP_Text>();
         placeHolderNickname = inputNickname.placeholder.GetComponent<TMP_Text>();
         placeHolderPassWord = inputPassword.placeholder.GetComponent<TMP_Text>();
-        btnBack1.onClick.AddListener(SetServerUI);
 
         InitializeCharacterInfos(new bool[charBtns.Length]); // 기본적으로 모든 캐릭터 잠금
         InitializeCharacterButtons();
@@ -216,57 +217,63 @@ public class UIStart : MonoBehaviour
         placeHolder1.text = "서버주소를 입력해주세요!";
         charList.SetActive(false);
         loginWindow.gameObject.SetActive(false);
-        btnBack1.gameObject.SetActive(false);
         inputPort.gameObject.SetActive(true);
         btnConfirm1.onClick.RemoveAllListeners();
-        btnConfirm1.onClick.AddListener(ConfirmServer);
+        btnConfirm1.onClick.AddListener(ConnectServer);
     }
 
     void SetLoginUI()
     {
         txtMessage2.color = UnityEngine.Color.white;
-        txtMessage2.text = "닉네임과 아이디를 입력해 주세요";
+        txtMessage2.text = "닉네임과 비밀번호를 입력해 주세요";
         txtloginRegisterTitle.color = UnityEngine.Color.white;
         txtloginRegisterTitle.text = "로그인";
         txtRegisterLogin.color = UnityEngine.Color.black;
         txtRegisterLogin.text = "회원가입";
+
+        Image loginImage = loginWindow.GetComponent<Image>();
+        if (loginImage != null)
+        {
+            loginImage.color = new UnityEngine.Color(0.18f, 0.18f, 0.18f);
+        }
+
         inputNickname.text = string.Empty;
         inputPassword.text = string.Empty;
         placeHolderNickname.text = "닉네임을 입력해주세요 (2~10글자)";
         placeHolderPassWord.text = "비밀번호를 입력해주세요 (6자 이상)";
         charList.SetActive(false);
-        btnBack1.gameObject.SetActive(true);
         inputPort.gameObject.SetActive(false);
         btnRegister.onClick.RemoveAllListeners();
         btnRegister.onClick.AddListener(SetRegisterUI);
         btnConfirm3.onClick.RemoveAllListeners();
-        btnConfirm3.onClick.AddListener(ConfirmNickname);
+        btnConfirm3.onClick.AddListener(() => OnConfirmButtonClicked(isLogin: true));
     }
 
     void SetRegisterUI()
     {
         txtMessage2.color = UnityEngine.Color.white;
-        txtMessage2.text = "닉네임과 아이디를 입력해 주세요";
+        txtMessage2.text = "닉네임과 비밀번호를 입력해 주세요";
         txtloginRegisterTitle.color = UnityEngine.Color.white;
         txtloginRegisterTitle.text = "회원가입";
         txtRegisterLogin.color = UnityEngine.Color.black;
         txtRegisterLogin.text = "로그인";
+
+        Image loginImage = loginWindow.GetComponent<Image>();
+        if (loginImage != null)
+        {
+            loginImage.color = new UnityEngine.Color(0.28f, 0.14f, 0.14f);
+        }
+
         inputNickname.text = string.Empty;
         inputPassword.text = string.Empty;
         placeHolderNickname.text = "닉네임을 입력해주세요 (2~10글자)";
         placeHolderPassWord.text = "비밀번호를 입력해주세요 (6자 이상)";
         charList.SetActive(false);
-        btnBack1.gameObject.SetActive(true);
         inputPort.gameObject.SetActive(false);
         btnRegister.onClick.RemoveAllListeners();
         btnRegister.onClick.AddListener(SetLoginUI);
         btnConfirm3.onClick.RemoveAllListeners();
-        btnConfirm3.onClick.AddListener(ConfirmRegister);
-    }
-
-    void ConfirmRegister()
-    {
-
+        btnConfirm3.onClick.AddListener(() => OnConfirmButtonClicked(isLogin: false));
     }
 
     public void SetCharacterSelectionUI(int coin)
@@ -274,7 +281,7 @@ public class UIStart : MonoBehaviour
         txtMessage1.color = UnityEngine.Color.white;
         txtMessage1.text = "캐릭터를 선택해주세요";
         charList.SetActive(true);
-        btnBack1.gameObject.SetActive(false);
+        loginWindow.gameObject.SetActive(false);
         inputServer.gameObject.SetActive(false);
         inputNickname.gameObject.SetActive(false);
         inputPassword.gameObject.SetActive(false);
@@ -287,35 +294,127 @@ public class UIStart : MonoBehaviour
         btnConfirm2.onClick.AddListener(() => StartGame());
     }
 
-    void ConfirmServer()
+    private void OnConfirmButtonClicked(bool isLogin)
     {
-        serverUrl = inputServer.text;
-        port = inputPort.text;
+        string nickname = inputNickname.text;
+        string password = inputPassword.text;
+
+        // 닉네임 및 비밀번호 길이 검사
+        if (string.IsNullOrEmpty(nickname) || string.IsNullOrEmpty(password))
+        {
+            txtMessage2.color = UnityEngine.Color.red;
+            txtMessage2.text = "닉네임과 비밀번호를 모두 입력해 주세요";
+            return;
+        }
+
+        if (nickname.Length < 2 || nickname.Length > 10)
+        {
+            txtMessage2.color = UnityEngine.Color.red;
+            txtMessage2.text = "닉네임은 2~10글자여야 합니다!";
+            Debug.Log("UIStart: Nickname length is invalid");
+            return;
+        }
+
+        if (password.Length < 6)
+        {
+            txtMessage2.color = UnityEngine.Color.red;
+            txtMessage2.text = "비밀번호는 6글자 이상이어야 합니다!";
+            Debug.Log("UIStart: Password is too short");
+            return;
+        }
+
+        if (isLogin)
+        {
+            // 서버로 로그인 요청을 보내는 로직
+            LoginServer(nickname, password);
+        }
+        else
+        {
+            // 서버로 회원가입 요청을 보내는 로직
+            RegisterServer(nickname, password);
+        }
+    }
+
+    void LoginServer(string nick, string pw)
+    {
+       C_Login loginPacket = new C_Login 
+       {
+           Nickname = nick,
+           Password = pw,
+       };
+
+       GameManager.Network.Send(loginPacket);
+    }
+
+    void RegisterServer(string nick, string pw)
+    {
+        C_Register registerPacket = new C_Register
+        {
+            Nickname = nick,
+            Password = pw,
+        };
+
+        GameManager.Network.Send(registerPacket);
+    }
+
+    void ConnectServer()
+    {
+        GameManager.Network.Init(serverUrl, port);
+    }
+
+    public void FailLoginServer() 
+    {
+        SucFailBox.gameObject.SetActive(true);
+        txtSucFail.color = UnityEngine.Color.white;
+        txtSucFail.text = "로그인에 실패하였습니다.";
+
+        btnSucFail.onClick.RemoveAllListeners();
+        btnSucFail.onClick.AddListener(() =>
+        {
+            SucFailBox.gameObject.SetActive(false);
+        });
+    }
+
+    public void FailRegisterServer()
+    {
+        SucFailBox.gameObject.SetActive(true);
+        txtSucFail.color = UnityEngine.Color.white;
+        txtSucFail.text = "회원가입에 실패하였습니다.";
+
+        btnSucFail.onClick.RemoveAllListeners();
+        btnSucFail.onClick.AddListener(() =>
+        {
+            SucFailBox.gameObject.SetActive(false);
+        });
+    }
+
+    public void ConfirmServer(string url, string serverPort)
+    {
+        serverUrl = url;
+        port = serverPort;
         loginWindow.gameObject.SetActive(true);
         SetLoginUI();
     }
 
-    void ConfirmNickname()
+    public void ConfirmLogin()
     {
-        if (inputNickname.text.Length < 2)
-        {
-            txtMessage2.text = "이름을 2글자 이상 입력해주세요!";
-            Debug.Log("UIStart: Nickname is too short");
-            return;
-        }
-
-        if (inputNickname.text.Length > 10)
-        {
-            txtMessage2.text = "이름을 10글자 이하로 입력해주세요!";
-            Debug.Log("UIStart: Nickname is too long");
-            return;
-        }
-
         nickname = inputNickname.text;
         GameManager.Instance.UserName = nickname;
         Debug.Log($"UIStart: Nickname confirmed: {nickname}");
+    }
 
-        GameManager.Network.Init(serverUrl, port);
+    public void ConfirmRegister()
+    {
+        SucFailBox.gameObject.SetActive(true);
+        txtSucFail.color = UnityEngine.Color.white;
+        txtSucFail.text = "회원가입에 성공하였습니다!!";
+
+        btnSucFail.onClick.RemoveAllListeners();
+        btnSucFail.onClick.AddListener(() =>
+        {
+            SucFailBox.gameObject.SetActive(false);
+            SetLoginUI();
+        });
     }
 
     public void StartGame(bool deactivateObject = true, int? providedClassIdx = null)

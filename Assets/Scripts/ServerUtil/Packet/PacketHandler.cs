@@ -10,10 +10,58 @@ using System.Linq;
 
 class PacketHandler
 {
-	#region Town
+    #region Town
 
+    public static void S_ConnectHandler(PacketSession session, IMessage packet)
+    {
+        S_Connect ConnectPacket = packet as S_Connect;
+        if (ConnectPacket == null)
+            return;
 
-	public static void S_UnlockCharacterHandler (PacketSession session, IMessage packet)
+		TownManager.Instance.uiStart.ConfirmServer("127.0.0.1", "3000");
+    }
+
+    public static void S_LoginHandler(PacketSession session, IMessage packet)
+    {
+        S_Login LoginPacket = packet as S_Login;
+        if (LoginPacket == null)
+            return;
+
+        if (LoginPacket.Success)
+        {
+            // true일 때 실행할 로직
+            bool[] isUnlockedArray = LoginPacket.IsUnlocked.ToArray();
+            TownManager.Instance.uiStart.InitializeCharacterInfos(isUnlockedArray);
+            TownManager.Instance.uiStart.ConfirmLogin();
+            TownManager.Instance.coinDisplay.SetCoins(LoginPacket.Coin);
+            TownManager.Instance.uiStart.SetCharacterSelectionUI(LoginPacket.Coin);
+        }
+        else
+        {
+            // false일 때 실행할 로직
+            TownManager.Instance.uiStart.FailLoginServer();
+        }
+    }
+
+    public static void S_RegisterHandler(PacketSession session, IMessage packet)
+    {
+        S_Register RegisterPacket = packet as S_Register;
+        if (RegisterPacket == null)
+            return;
+
+        if (RegisterPacket.Success)
+        {
+            // true일 때 실행할 로직
+            TownManager.Instance.uiStart.ConfirmRegister();
+        }
+        else
+        {
+            // false일 때 실행할 로직
+            TownManager.Instance.uiStart.FailRegisterServer();
+        }
+    }
+
+    public static void S_UnlockCharacterHandler (PacketSession session, IMessage packet)
 	{
 		S_UnlockCharacter playerUnlockPacket = packet as S_UnlockCharacter;
         if (playerUnlockPacket == null)
@@ -29,19 +77,6 @@ class PacketHandler
             return;
 
         TownManager.Instance.uiShrine.UpdateStatOnServer(playerUpgradePacket);
-    }
-
-	public static void S_SelectCharacterHandler(PacketSession session, IMessage packet)
-	{
-		S_SelectCharacter selectCharacterPacket = packet as S_SelectCharacter;
-        if (selectCharacterPacket == null)
-            return;
-
-        bool[] isUnlockedArray = selectCharacterPacket.IsUnlocked.ToArray();
-
-        TownManager.Instance.uiStart.InitializeCharacterInfos(isUnlockedArray);
-		TownManager.Instance.coinDisplay.SetCoins(selectCharacterPacket.Coin);
-        TownManager.Instance.uiStart.SetCharacterSelectionUI(selectCharacterPacket.Coin);
     }
 
 	public static void S_PlayerItemHandler(PacketSession session, IMessage packet)

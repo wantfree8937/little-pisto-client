@@ -88,12 +88,9 @@ public class TownManager : MonoBehaviour
 
     public void Connected()
     {
-        C_Login enterPacket = new C_Login
-        {
-            Nickname = GameManager.Instance.UserName,
-        };
+        C_Connect connectPacket = new C_Connect{};
 
-        GameManager.Network.Send(enterPacket);
+        GameManager.Network.Send(connectPacket);
     }
 
     public void Spawn(PlayerInfo playerInfo)
