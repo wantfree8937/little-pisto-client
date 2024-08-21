@@ -87,6 +87,13 @@ public class UIStart : MonoBehaviour
             ClosePopup();
         });
 
+        if (inputPassword != null)
+        {
+            inputPassword.contentType = TMP_InputField.ContentType.Password;
+            inputPassword.characterLimit = 16;  // 비밀번호 최대 길이 설정 (필요에 따라 설정)
+            inputPassword.ForceLabelUpdate();   // 즉시 UI 업데이트
+        }
+
         popupCancelButton.onClick.AddListener(ClosePopup);
         insufficientCoinsConfirmButton.onClick.AddListener(CloseInsufficientCoinsPopup);
 
