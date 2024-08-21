@@ -103,6 +103,9 @@ private void SetBgm(int dungeonCode)
     // 던전 코드에 따라 BGM 설정
     switch (dungeonCode)
     {
+        case 5004:
+            Managers.Sound.Play("bossBgm", Define.Sound.Bgm, volume: 0.3f);
+            break;
         case 5005:
             Managers.Sound.Play("dungeonHell", Define.Sound.Bgm, volume: 0.1f);
             break;
