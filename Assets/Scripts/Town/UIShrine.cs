@@ -134,8 +134,8 @@ public class UIShrine : MonoBehaviour
 
             // 게이지가 최대값에 도달하면 라스트 스테이지 버튼을 활성화
             bool isMaxLevel = ritualGaugeBar.value >= ritualGaugeBar.maxValue;
-            lastStageBtn.gameObject.SetActive(true);
-            arrowGroup.SetActive(true);
+            lastStageBtn.gameObject.SetActive(isMaxLevel);
+            arrowGroup.SetActive(isMaxLevel);
         }
     }
 
