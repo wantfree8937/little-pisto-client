@@ -62,13 +62,17 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SMonsterAction, PacketHandler.S_MonsterActionHandler);
 		_onRecv.Add((ushort)MsgId.SPlayerItem, MakePacket<S_PlayerItem>);
 		_handler.Add((ushort)MsgId.SPlayerItem, PacketHandler.S_PlayerItemHandler);
-		_onRecv.Add((ushort)MsgId.SSelectCharacter, MakePacket<S_SelectCharacter>);
-		_handler.Add((ushort)MsgId.SSelectCharacter, PacketHandler.S_SelectCharacterHandler);
+		_onRecv.Add((ushort)MsgId.SLogin, MakePacket<S_Login>);
+		_handler.Add((ushort)MsgId.SLogin, PacketHandler.S_LoginHandler);
 		_onRecv.Add((ushort)MsgId.SPlayerUpgrade, MakePacket<S_PlayerUpgrade>);
 		_handler.Add((ushort)MsgId.SPlayerUpgrade, PacketHandler.S_PlayerUpgradeHandler);
 		_onRecv.Add((ushort)MsgId.SUnlockCharacter, MakePacket<S_UnlockCharacter>);
 		_handler.Add((ushort)MsgId.SUnlockCharacter, PacketHandler.S_UnlockCharacterHandler);
-	}
+        _onRecv.Add((ushort)MsgId.SConnect, MakePacket<S_Connect>);
+        _handler.Add((ushort)MsgId.SConnect, PacketHandler.S_ConnectHandler);
+        _onRecv.Add((ushort)MsgId.SRegister, MakePacket<S_Register>);
+        _handler.Add((ushort)MsgId.SRegister, PacketHandler.S_RegisterHandler);
+    }
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)
 	{

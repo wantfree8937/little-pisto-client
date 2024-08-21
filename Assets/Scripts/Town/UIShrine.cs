@@ -106,12 +106,7 @@ public class UIShrine : MonoBehaviour
             // 업데이트된 정보를 서버로 전송
             C_PlayerUpgrade soulPacket = new C_PlayerUpgrade {};
 
-            Debug.Log(soulPacket);
             GameManager.Network.Send(soulPacket);
-        }
-        else
-        {
-            Debug.Log("영혼이 부족합니다");
         }
     }
 

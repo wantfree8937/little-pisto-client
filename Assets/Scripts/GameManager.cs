@@ -18,7 +18,8 @@ public class GameManager : MonoBehaviour
     public const string TownScene = "Town";
 
     public S_EnterDungeon Pkt;
-    
+
+    public string PassWord;
     public string UserName;
     public int ClassIdx;
     
