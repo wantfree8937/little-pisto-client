@@ -4,6 +4,7 @@ using Google.Protobuf.Protocol;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Text.RegularExpressions;
 
 [Serializable]
 public class CharacterInfo
@@ -34,6 +35,7 @@ public class UIStart : MonoBehaviour
     [SerializeField] private Button btnSucFail;
     [SerializeField] public  GameObject loginWindow;
     [SerializeField] private GameObject SucFailBox;
+    [SerializeField] private GameObject VerificationBox;
     [SerializeField] private TMP_InputField inputServer;
     [SerializeField] private TMP_InputField inputNickname;
     [SerializeField] private TMP_InputField inputPassword;
@@ -93,15 +95,9 @@ public class UIStart : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Return) && inputServer.IsActive())
-        {
-            btnConfirm1.onClick.Invoke();
-        }
-
         if (Input.GetKeyUp(KeyCode.Return) && inputNickname.IsActive())
         {
             btnConfirm3.onClick.Invoke();
-            btnRegister.onClick.Invoke();
         }
     }
 
@@ -239,9 +235,19 @@ public class UIStart : MonoBehaviour
 
         inputNickname.text = string.Empty;
         inputPassword.text = string.Empty;
-        placeHolderNickname.text = "닉네임을 입력해주세요 (2~10글자)";
-        placeHolderPassWord.text = "비밀번호를 입력해주세요 (6자 이상)";
+
+        if (placeHolderNickname != null)
+        {
+            placeHolderNickname.text = "닉네임을 입력해주세요 (2~10글자)";
+        }
+
+        if (placeHolderPassWord != null)
+        {
+            placeHolderPassWord.text = "비밀번호를 입력해주세요 (6~16글자)";
+        }
+
         charList.SetActive(false);
+        VerificationBox.gameObject.SetActive(false);
         inputPort.gameObject.SetActive(false);
         btnRegister.onClick.RemoveAllListeners();
         btnRegister.onClick.AddListener(SetRegisterUI);
@@ -267,8 +273,9 @@ public class UIStart : MonoBehaviour
         inputNickname.text = string.Empty;
         inputPassword.text = string.Empty;
         placeHolderNickname.text = "닉네임을 입력해주세요 (2~10글자)";
-        placeHolderPassWord.text = "비밀번호를 입력해주세요 (6자 이상)";
+        placeHolderPassWord.text = "비밀번호를 입력해주세요 (6~16글자)";
         charList.SetActive(false);
+        VerificationBox.gameObject.SetActive(true);
         inputPort.gameObject.SetActive(false);
         btnRegister.onClick.RemoveAllListeners();
         btnRegister.onClick.AddListener(SetLoginUI);
@@ -302,22 +309,19 @@ public class UIStart : MonoBehaviour
         // 닉네임 및 비밀번호 길이 검사
         if (string.IsNullOrEmpty(nickname) || string.IsNullOrEmpty(password))
         {
-            txtMessage2.color = UnityEngine.Color.red;
-            txtMessage2.text = "닉네임과 비밀번호를 모두 입력해 주세요";
+            ShowErrorMessage("닉네임과 비밀번호를 모두 입력해 주세요");
             return;
         }
 
-        if (nickname.Length < 2 || nickname.Length > 10)
+        if (!IsValidNickname(nickname))
         {
-            txtMessage2.color = UnityEngine.Color.red;
-            txtMessage2.text = "닉네임은 2~10글자여야 합니다!";
+            ShowErrorMessage("닉네임은 2~10자의 한글, 영어, 숫자만 가능합니다!");
             return;
         }
 
-        if (password.Length < 6)
+        if (!IsValidPassword(password))
         {
-            txtMessage2.color = UnityEngine.Color.red;
-            txtMessage2.text = "비밀번호는 6글자 이상이어야 합니다!";
+            ShowErrorMessage("비밀번호는 6~16자 영문, 숫자, 특수문자 조합이어야 합니다!");
             return;
         }
 
@@ -331,6 +335,26 @@ public class UIStart : MonoBehaviour
             // 서버로 회원가입 요청을 보내는 로직
             RegisterServer(nickname, password);
         }
+    }
+
+    private bool IsValidNickname(string nickname)
+    {
+        // 닉네임은 2~10자 한글, 영어, 숫자만 허용
+        var nicknamePattern = @"^[가-힣a-zA-Z0-9]{2,10}$";
+        return Regex.IsMatch(nickname, nicknamePattern);
+    }
+
+    private bool IsValidPassword(string password)
+    {
+        // 비밀번호는 6~16자 영문, 숫자, 특수문자 조합이어야 함
+        var passwordPattern = @"^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*+=-]).{6,16}$";
+        return Regex.IsMatch(password, passwordPattern);
+    }
+
+    private void ShowErrorMessage(string message)
+    {
+        txtMessage2.color = UnityEngine.Color.red;
+        txtMessage2.text = message;
     }
 
     public void LoginServer(string nick, string pw)
