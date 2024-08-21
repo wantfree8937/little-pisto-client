@@ -30,7 +30,8 @@ public class BattleManager : MonoBehaviour
     private List<UIMonsterInformation> monsterUis = new List<UIMonsterInformation>();
     
     private string baseMonsterPath = "Monster/Monster1";
-    
+
+    private int animationCode;
 
     private int[] animCodeList = new[]
     {
@@ -152,7 +153,7 @@ public class BattleManager : MonoBehaviour
     {
         if(idx < 0 || idx >= animCodeList.Length)
             return;
-        
+
         var animCode = animCodeList[idx];
         TriggerAnim(animCode);
     }

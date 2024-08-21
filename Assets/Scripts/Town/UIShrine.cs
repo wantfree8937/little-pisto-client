@@ -44,7 +44,7 @@ public class UIShrine : MonoBehaviour
 
         // 슬라이더의 최소값과 최대값 설정
         ritualGaugeBar.minValue = 0; // 최소값
-        ritualGaugeBar.maxValue = 50; // 최대값
+        ritualGaugeBar.maxValue = 40; // 최대값
 
         arrowGroupPulse = arrowGroup.GetComponent<ImagePulse>();
 
@@ -134,8 +134,8 @@ public class UIShrine : MonoBehaviour
 
             // 게이지가 최대값에 도달하면 라스트 스테이지 버튼을 활성화
             bool isMaxLevel = ritualGaugeBar.value >= ritualGaugeBar.maxValue;
-            lastStageBtn.gameObject.SetActive(isMaxLevel);
-            arrowGroup.SetActive(isMaxLevel);
+            lastStageBtn.gameObject.SetActive(true);
+            arrowGroup.SetActive(true);
         }
     }
 

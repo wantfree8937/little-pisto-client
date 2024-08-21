@@ -295,7 +295,7 @@ class PacketHandler
         
         Monster monster = BattleManager.Instance.GetMonster(pkt.TargetMonsterIdx);
 		monster.Hit();
-        
+
         BattleManager.Instance.PlayerAnim(pkt.ActionSet.AnimCode);
 		EffectManager.Instance.SetEffectToMonster(pkt.TargetMonsterIdx, pkt.ActionSet.EffectCode);
 	}

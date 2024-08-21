@@ -16,7 +16,7 @@ public class GaugeBar : MonoBehaviour
 
         // 슬라이더의 최소값과 최대값 설정
         slider.minValue = 0; // 최소값
-        slider.maxValue = 50; // 최대값
+        slider.maxValue = 40; // 최대값
 
         slider.interactable = false; // 슬라이더를 클릭할 수 없게 설정
 
