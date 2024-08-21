@@ -18,6 +18,8 @@ public class GaugeBar : MonoBehaviour
         slider.minValue = 0; // 최소값
         slider.maxValue = 50; // 최대값
 
+        slider.interactable = false; // 슬라이더를 클릭할 수 없게 설정
+
         // 초기 슬라이더 값 설정
         slider.value = gaugeStart;
     }
