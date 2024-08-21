@@ -8,6 +8,8 @@ public class BattleManager : MonoBehaviour
 {
     private static BattleManager _instance = null;
     public static BattleManager Instance => _instance;
+
+    public int userClass;
     
     [SerializeField] private UIScreen uiScreen;
     [SerializeField] private UIBattleLog uiBattleLog;
@@ -65,6 +67,7 @@ public class BattleManager : MonoBehaviour
         {
             uiPlayerInformation.Set(pkt.Player);
             SetPlayer(pkt.Player.PlayerClass);
+            userClass = pkt.Player.PlayerClass;
         }
 
         if (pkt.ScreenText != null)
@@ -73,6 +76,7 @@ public class BattleManager : MonoBehaviour
         if (pkt.BattleLog != null)
             uiBattleLog.Set(pkt.BattleLog);
     }
+    
 
     private void SetPlayer(int classCode)
     {
@@ -91,8 +95,24 @@ public class BattleManager : MonoBehaviour
     {
         SetMap(dungeonInfo.DungeonCode);
         SetMonster(dungeonInfo.Monsters);
+        SetBgm(dungeonInfo.DungeonCode);
     }
-
+private void SetBgm(int dungeonCode)
+{
+    // 던전 코드에 따라 BGM 설정
+    switch (dungeonCode)
+    {
+        case 5005:
+            Managers.Sound.Play("dungeonHell", Define.Sound.Bgm, volume: 0.1f);
+            break;
+        case 5006:
+            Managers.Sound.Play("dungeonDesert", Define.Sound.Bgm, volume: 0.1f);
+            break;
+        default:
+            Managers.Sound.Play("dungeonBgm1", Define.Sound.Bgm, volume: 0.075f);
+            break;
+    }
+}
     void ResetMonster()
     {
         for (var i = monsterObjs.Count - 1; i >= 0; i--)
@@ -146,6 +166,12 @@ public class BattleManager : MonoBehaviour
     public void PlayerHit()
     {
         TriggerAnim(Constants.PlayerBattleHit);
+        playHitSound();
+        
+    }
+    private void playHitSound()
+    {
+        Managers.Sound.Play("playerHit", volume: 0.4f);
     }
 
     public void PlayerAnim(int idx)
@@ -163,6 +189,7 @@ public class BattleManager : MonoBehaviour
         playerAnimator.transform.localPosition = Vector3.zero;
         playerAnimator.applyRootMotion = code == Constants.PlayerBattleDie;
         playerAnimator.SetTrigger(code);
+
     }
 
     public void SetMap(int id)

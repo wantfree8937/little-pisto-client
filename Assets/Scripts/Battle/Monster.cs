@@ -40,5 +40,11 @@ public class Monster : MonoBehaviour
     public void Hit()
     {
         animator.SetTrigger(Constants.MonsterHit);
+        playHitSound();
+    }
+    private void playHitSound()
+    {
+        
+            Managers.Sound.Play("monsterHit", volume: 0.2f);
     }
 }

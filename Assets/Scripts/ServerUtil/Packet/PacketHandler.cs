@@ -10,6 +10,47 @@ using System.Linq;
 
 class PacketHandler
 {
+public static void S_PlaySoundHandler(PacketSession session, IMessage packet)
+{
+    S_PlaySound soundPacket = packet as S_PlaySound;
+    if (soundPacket == null)
+	        return;
+
+	    string soundName = soundPacket.SoundName;
+	    playSound(soundName);
+	}
+
+	private static void playSound(string soundName)
+	{
+		float volume;
+		string name = soundName;
+		Debug.Log("WTF: "+ name);
+		switch(soundName)
+		{
+			case "attack_Swordsman":
+			Debug.Log("attack_Swordsman:"+soundName);
+			volume = 0.05f;
+    		Managers.Sound.Play(soundName, volume: volume);
+			break;
+			case "attack_Archer":
+			volume = 0.12f;
+    		Managers.Sound.Play(soundName, volume: volume);
+			break;
+			case "attack_Magician":
+			volume = 0.3f;
+    		Managers.Sound.Play("attack_Axeman", volume: volume);	
+			break;
+			case "attack_HammerMan":
+			volume = 0.3f;
+	    	Managers.Sound.Play("attack_Axeman", volume: volume);
+			break;
+			default:
+			Debug.Log("Hungry"+soundName);
+			volume = 1.2f;
+    		Managers.Sound.Play(soundName, volume: volume);
+			break;
+		}
+	}
     #region Town
 
     public static void S_ConnectHandler(PacketSession session, IMessage packet)
@@ -190,7 +231,7 @@ class PacketHandler
 
 	#region Battle
 
-	
+
 	public static void S_EnterDungeonHandler(PacketSession session, IMessage packet)
 	{
 		S_EnterDungeon pkt = packet as S_EnterDungeon;
@@ -287,7 +328,7 @@ class PacketHandler
 		BattleManager.Instance.SetMonsterHp(pkt.MonsterIdx, pkt.Hp);
 	}
 	
-	public static void S_PlayerActionHandler(PacketSession session, IMessage packet)
+		public static void S_PlayerActionHandler(PacketSession session, IMessage packet)
 	{
 		S_PlayerAction pkt = packet as S_PlayerAction;
 		if (pkt == null)
@@ -296,9 +337,10 @@ class PacketHandler
         Monster monster = BattleManager.Instance.GetMonster(pkt.TargetMonsterIdx);
 		monster.Hit();
         
-        BattleManager.Instance.PlayerAnim(pkt.ActionSet.AnimCode);
+		BattleManager.Instance.PlayerAnim(pkt.ActionSet.AnimCode);
 		EffectManager.Instance.SetEffectToMonster(pkt.TargetMonsterIdx, pkt.ActionSet.EffectCode);
 	}
+	
 	
 	public static void S_MonsterActionHandler(PacketSession session, IMessage packet)
 	{

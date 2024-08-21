@@ -72,6 +72,8 @@ class PacketManager
         _handler.Add((ushort)MsgId.SConnect, PacketHandler.S_ConnectHandler);
         _onRecv.Add((ushort)MsgId.SRegister, MakePacket<S_Register>);
         _handler.Add((ushort)MsgId.SRegister, PacketHandler.S_RegisterHandler);
+        _onRecv.Add((ushort)MsgId.SPlaySound, MakePacket<S_PlaySound>);
+        _handler.Add((ushort)MsgId.SPlaySound, PacketHandler.S_PlaySoundHandler);
     }
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)
