@@ -25,8 +25,8 @@ public class UIPlayerInformation : MonoBehaviour
     private float fullMP;
     private float curMP;
     
-    private float fillWidth = 634;
-    private float fillHeight = 40; 
+    private float fillWidth = 291;
+    private float fillHeight = 21; 
 
     
     public void SetLevel(int level)
@@ -56,8 +56,6 @@ public class UIPlayerInformation : MonoBehaviour
 
         if (recover)
             SetCurHP(hp);
-            
-        txtHp.rectTransform.sizeDelta = new Vector2(txtHp.preferredWidth + 50, 40);
     }
     
     public void SetCurHP(float hp)
@@ -67,8 +65,6 @@ public class UIPlayerInformation : MonoBehaviour
         
         float per = curHP/fullHP;
         imgHpFill.rectTransform.sizeDelta = new Vector2(fillWidth * per, fillHeight);
-
-        txtHp.rectTransform.sizeDelta = new Vector2(txtHp.preferredWidth + 50, 40);
     }
     
     
@@ -79,8 +75,6 @@ public class UIPlayerInformation : MonoBehaviour
 
         if (recover)
             SetCurMP(mp);
-            
-        txtMp.rectTransform.sizeDelta = new Vector2(txtMp.preferredWidth + 50, 40);
     }
     
     public void SetCurMP(float mp)
@@ -90,7 +84,5 @@ public class UIPlayerInformation : MonoBehaviour
         
         float per = curMP/fullMP;
         imgMpFill.rectTransform.sizeDelta = new Vector2(fillWidth * per, fillHeight);
-
-        txtMp.rectTransform.sizeDelta = new Vector2(txtMp.preferredWidth + 50, 40);
     }
 }
