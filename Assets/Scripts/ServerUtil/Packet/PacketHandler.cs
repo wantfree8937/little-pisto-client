@@ -17,39 +17,16 @@ public static void S_PlaySoundHandler(PacketSession session, IMessage packet)
 	        return;
 
 	    string soundName = soundPacket.SoundName;
-	    playSound(soundName);
+		float soundVolume = soundPacket.Volume;
+	    playSound(soundName, soundVolume);
 	}
 
-	private static void playSound(string soundName)
+	private static void playSound(string soundName, float soundVolume)
 	{
-		float volume;
+		float volume = soundVolume;
 		string name = soundName;
-		Debug.Log("WTF: "+ name);
-		switch(soundName)
-		{
-			case "attack_Swordsman":
-			Debug.Log("attack_Swordsman:"+soundName);
-			volume = 0.05f;
+		
     		Managers.Sound.Play(soundName, volume: volume);
-			break;
-			case "attack_Archer":
-			volume = 0.12f;
-    		Managers.Sound.Play(soundName, volume: volume);
-			break;
-			case "attack_Magician":
-			volume = 0.3f;
-    		Managers.Sound.Play("attack_Axeman", volume: volume);	
-			break;
-			case "attack_HammerMan":
-			volume = 0.3f;
-	    	Managers.Sound.Play("attack_Axeman", volume: volume);
-			break;
-			default:
-			Debug.Log("Hungry"+soundName);
-			volume = 1.2f;
-    		Managers.Sound.Play(soundName, volume: volume);
-			break;
-		}
 	}
     #region Town
 

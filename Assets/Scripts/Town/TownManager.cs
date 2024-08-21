@@ -115,13 +115,13 @@ public class TownManager : MonoBehaviour
     // BGM 설정
     switch(bgmName){
         case "townBgm":
-        Managers.Sound.Play("townBgm", Define.Sound.Bgm, volume: 0.2f);
+        Managers.Sound.Play("townBgm", Define.Sound.Bgm, volume: 0.1f);
         break;
         case "titleBgm":
-        Managers.Sound.Play("titleBgm", Define.Sound.Bgm, volume: 0.2f);
+        Managers.Sound.Play("titleBgm", Define.Sound.Bgm, volume: 0.1f);
         break;
         default:
-            Managers.Sound.Play("townBgm", Define.Sound.Bgm, volume: 0.2f);
+            Managers.Sound.Play("townBgm", Define.Sound.Bgm, volume: 0.1f);
             break;
 
     }

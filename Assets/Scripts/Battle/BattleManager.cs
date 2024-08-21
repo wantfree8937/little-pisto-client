@@ -110,7 +110,7 @@ private void SetBgm(int dungeonCode)
             Managers.Sound.Play("dungeonDesert", Define.Sound.Bgm, volume: 0.1f);
             break;
         default:
-            Managers.Sound.Play("dungeonBgm1", Define.Sound.Bgm, volume: 0.075f);
+            Managers.Sound.Play("dungeonBgm1", Define.Sound.Bgm, volume: 0.1f);
             break;
     }
 }
@@ -132,6 +132,7 @@ private void SetBgm(int dungeonCode)
         for (var i = 0; i < monsters.Count; i++)
         {
             var monsterInfo = monsters[i];
+            Debug.Log("MonsterSetting" + monsterInfo);
             var monsterCode = monsterInfo.MonsterModel;
             var monsterPath = monsterDb.GetValueOrDefault(monsterCode, baseMonsterPath);
             var monsterRes = Resources.Load<Monster>(monsterPath);
