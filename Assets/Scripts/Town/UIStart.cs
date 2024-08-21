@@ -29,14 +29,24 @@ public class UIStart : MonoBehaviour
 
     [SerializeField] private Button btnConfirm1;
     [SerializeField] private Button btnConfirm2;
+    [SerializeField] private Button btnConfirm3;
+    [SerializeField] private Button btnRegister;
     [SerializeField] private Button btnBack1;
+    [SerializeField] private GameObject loginWindow;
+    [SerializeField] private TMP_InputField inputServer;
     [SerializeField] private TMP_InputField inputNickname;
+    [SerializeField] private TMP_InputField inputPassword;
     [SerializeField] private TMP_InputField inputPort;
-    [SerializeField] private TMP_Text txtMessage;
+    [SerializeField] private TMP_Text txtMessage1;
+    [SerializeField] private TMP_Text txtMessage2;
+    [SerializeField] private TMP_Text txtRegisterLogin;
+    [SerializeField] private TMP_Text txtloginRegisterTitle;
 
     [SerializeField] private GameObject userCoinBox;
     [SerializeField] private TMP_Text coinMessage;
-    private TMP_Text placeHolder;
+    private TMP_Text placeHolder1;
+    private TMP_Text placeHolderNickname;
+    private TMP_Text placeHolderPassWord;
 
     [SerializeField] private GameObject popupPanel;
     [SerializeField] private GameObject popupWindow;
@@ -51,6 +61,7 @@ public class UIStart : MonoBehaviour
     public int classIdx = 0;
     private string serverUrl;
     private string nickname;
+    private string password;
     private string port;
 
     private bool[] isCharacterUnlocked;
@@ -59,7 +70,9 @@ public class UIStart : MonoBehaviour
 
     void Start()
     {
-        placeHolder = inputNickname.placeholder.GetComponent<TMP_Text>();
+        placeHolder1 = inputServer.placeholder.GetComponent<TMP_Text>();
+        placeHolderNickname = inputNickname.placeholder.GetComponent<TMP_Text>();
+        placeHolderPassWord = inputPassword.placeholder.GetComponent<TMP_Text>();
         btnBack1.onClick.AddListener(SetServerUI);
 
         InitializeCharacterInfos(new bool[charBtns.Length]); // 기본적으로 모든 캐릭터 잠금
@@ -79,9 +92,15 @@ public class UIStart : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Return) && inputNickname.IsActive())
+        if (Input.GetKeyUp(KeyCode.Return) && inputServer.IsActive())
         {
             btnConfirm1.onClick.Invoke();
+        }
+
+        if (Input.GetKeyUp(KeyCode.Return) && inputNickname.IsActive())
+        {
+            btnConfirm3.onClick.Invoke();
+            btnRegister.onClick.Invoke();
         }
     }
 
@@ -191,37 +210,74 @@ public class UIStart : MonoBehaviour
 
     void SetServerUI()
     {
-        txtMessage.color = UnityEngine.Color.white;
-        txtMessage.text = "Welcome!";
-        inputNickname.text = string.Empty;
-        placeHolder.text = "서버주소를 입력해주세요!";
+        txtMessage1.color = UnityEngine.Color.white;
+        txtMessage1.text = "Welcome!";
+        inputServer.text = string.Empty;
+        placeHolder1.text = "서버주소를 입력해주세요!";
         charList.SetActive(false);
+        loginWindow.gameObject.SetActive(false);
         btnBack1.gameObject.SetActive(false);
         inputPort.gameObject.SetActive(true);
         btnConfirm1.onClick.RemoveAllListeners();
         btnConfirm1.onClick.AddListener(ConfirmServer);
     }
 
-    void SetNicknameUI()
+    void SetLoginUI()
     {
-        txtMessage.color = UnityEngine.Color.white;
-        txtMessage.text = "닉네임을 설정해주세요";
+        txtMessage2.color = UnityEngine.Color.white;
+        txtMessage2.text = "닉네임과 아이디를 입력해 주세요";
+        txtloginRegisterTitle.color = UnityEngine.Color.white;
+        txtloginRegisterTitle.text = "로그인";
+        txtRegisterLogin.color = UnityEngine.Color.black;
+        txtRegisterLogin.text = "회원가입";
         inputNickname.text = string.Empty;
-        placeHolder.text = "닉네임을 입력해주세요 (2~10글자)";
+        inputPassword.text = string.Empty;
+        placeHolderNickname.text = "닉네임을 입력해주세요 (2~10글자)";
+        placeHolderPassWord.text = "비밀번호를 입력해주세요 (6자 이상)";
         charList.SetActive(false);
         btnBack1.gameObject.SetActive(true);
         inputPort.gameObject.SetActive(false);
-        btnConfirm1.onClick.RemoveAllListeners();
-        btnConfirm1.onClick.AddListener(ConfirmNickname);
+        btnRegister.onClick.RemoveAllListeners();
+        btnRegister.onClick.AddListener(SetRegisterUI);
+        btnConfirm3.onClick.RemoveAllListeners();
+        btnConfirm3.onClick.AddListener(ConfirmNickname);
+    }
+
+    void SetRegisterUI()
+    {
+        txtMessage2.color = UnityEngine.Color.white;
+        txtMessage2.text = "닉네임과 아이디를 입력해 주세요";
+        txtloginRegisterTitle.color = UnityEngine.Color.white;
+        txtloginRegisterTitle.text = "회원가입";
+        txtRegisterLogin.color = UnityEngine.Color.black;
+        txtRegisterLogin.text = "로그인";
+        inputNickname.text = string.Empty;
+        inputPassword.text = string.Empty;
+        placeHolderNickname.text = "닉네임을 입력해주세요 (2~10글자)";
+        placeHolderPassWord.text = "비밀번호를 입력해주세요 (6자 이상)";
+        charList.SetActive(false);
+        btnBack1.gameObject.SetActive(true);
+        inputPort.gameObject.SetActive(false);
+        btnRegister.onClick.RemoveAllListeners();
+        btnRegister.onClick.AddListener(SetLoginUI);
+        btnConfirm3.onClick.RemoveAllListeners();
+        btnConfirm3.onClick.AddListener(ConfirmRegister);
+    }
+
+    void ConfirmRegister()
+    {
+
     }
 
     public void SetCharacterSelectionUI(int coin)
     {
-        txtMessage.color = UnityEngine.Color.white;
-        txtMessage.text = "캐릭터를 선택해주세요";
+        txtMessage1.color = UnityEngine.Color.white;
+        txtMessage1.text = "캐릭터를 선택해주세요";
         charList.SetActive(true);
         btnBack1.gameObject.SetActive(false);
+        inputServer.gameObject.SetActive(false);
         inputNickname.gameObject.SetActive(false);
+        inputPassword.gameObject.SetActive(false);
         inputPort.gameObject.SetActive(false);
         userCoinBox.SetActive(true);
 
@@ -233,23 +289,24 @@ public class UIStart : MonoBehaviour
 
     void ConfirmServer()
     {
-        serverUrl = inputNickname.text;
+        serverUrl = inputServer.text;
         port = inputPort.text;
-        SetNicknameUI();
+        loginWindow.gameObject.SetActive(true);
+        SetLoginUI();
     }
 
     void ConfirmNickname()
     {
         if (inputNickname.text.Length < 2)
         {
-            txtMessage.text = "이름을 2글자 이상 입력해주세요!";
+            txtMessage2.text = "이름을 2글자 이상 입력해주세요!";
             Debug.Log("UIStart: Nickname is too short");
             return;
         }
 
         if (inputNickname.text.Length > 10)
         {
-            txtMessage.text = "이름을 10글자 이하로 입력해주세요!";
+            txtMessage2.text = "이름을 10글자 이하로 입력해주세요!";
             Debug.Log("UIStart: Nickname is too long");
             return;
         }
