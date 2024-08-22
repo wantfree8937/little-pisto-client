@@ -18,13 +18,16 @@ class PacketHandler
         if (ConnectPacket == null)
             return;
 
-        // TownManager.Instance.uiStart.ConfirmServer("3.36.133.58", "3000");
-        TownManager.Instance.uiStart.ConfirmServer("127.0.0.1", "3000");
+		// TownManager.Instance.uiStart.ConfirmServer("3.36.133.58", "3000");
+		if (string.IsNullOrEmpty(GameManager.Instance.UserName))
+		{
+			TownManager.Instance.uiStart.ConfirmServer();
+		}
 
-        if (!string.IsNullOrEmpty(GameManager.Instance.UserName) && !string.IsNullOrEmpty(GameManager.Instance.PassWord))
+        /* if (!string.IsNullOrEmpty(GameManager.Instance.UserName) && !string.IsNullOrEmpty(GameManager.Instance.PassWord))
         {
             TownManager.Instance.uiStart.LoginServer(GameManager.Instance.UserName, GameManager.Instance.PassWord);
-        }
+        } */
     }
 
     public static void S_LoginHandler(PacketSession session, IMessage packet)

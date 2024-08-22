@@ -19,8 +19,9 @@ public class GameManager : MonoBehaviour
 
     public S_EnterDungeon Pkt;
 
-    public string PassWord;
+    public bool[] IsCharacterUnlocked;
     public string UserName;
+    public int UserCoin;
     public int ClassIdx;
     
     private void Awake()

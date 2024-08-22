@@ -78,9 +78,20 @@ public class UIStart : MonoBehaviour
         placeHolderNickname = inputNickname.placeholder.GetComponent<TMP_Text>();
         placeHolderPassWord = inputPassword.placeholder.GetComponent<TMP_Text>();
 
-        InitializeCharacterInfos(new bool[charBtns.Length]); // 기본적으로 모든 캐릭터 잠금
-        InitializeCharacterButtons();
+        if (string.IsNullOrEmpty(GameManager.Instance.UserName))
+        {
+            // UserName이 없을 때만 초기화 메서드를 호출
+            InitializeCharacterInfos(new bool[charBtns.Length]); // 기본적으로 모든 캐릭터 잠금
+            SetServerUI();
+        }
+        else
+        {
+            InitializeCharacterInfos(GameManager.Instance.IsCharacterUnlocked);
+            TownManager.Instance.coinDisplay.SetCoins(GameManager.Instance.UserCoin);
+            TownManager.Instance.uiStart.SetCharacterSelectionUI(GameManager.Instance.UserCoin);
+        }
 
+        InitializeCharacterButtons();
         popupConfirmButton.onClick.AddListener(() =>
         {
             onPopupConfirm?.Invoke();
@@ -97,7 +108,6 @@ public class UIStart : MonoBehaviour
         popupCancelButton.onClick.AddListener(ClosePopup);
         insufficientCoinsConfirmButton.onClick.AddListener(CloseInsufficientCoinsPopup);
 
-        SetServerUI();
     }
 
     private void Update()
@@ -124,6 +134,7 @@ public class UIStart : MonoBehaviour
         };
 
         isCharacterUnlocked = isUnlocked;
+        GameManager.Instance.IsCharacterUnlocked = isUnlocked;
 
         for (int i = 0; i < charBtns.Length; i++)
         {
@@ -186,6 +197,9 @@ public class UIStart : MonoBehaviour
                         };
 
                         GameManager.Network.Send(unlockPacket);
+
+                        isCharacterUnlocked[idx] = true;
+                        GameManager.Instance.IsCharacterUnlocked[idx] = true;
                     }
                     else
                     {
@@ -373,7 +387,6 @@ public class UIStart : MonoBehaviour
         };
 
         GameManager.Instance.UserName = nick;
-        GameManager.Instance.PassWord = pw;
 
         GameManager.Network.Send(loginPacket);
     }
@@ -420,10 +433,10 @@ public class UIStart : MonoBehaviour
         });
     }
 
-    public void ConfirmServer(string url, string serverPort)
+    public void ConfirmServer()
     {
-        serverUrl = url;
-        port = serverPort;
+        // serverUrl = url;
+        // port = serverPort;
         loginWindow.gameObject.SetActive(true);
         SetLoginUI();
     }
@@ -446,6 +459,8 @@ public class UIStart : MonoBehaviour
     {
         nickname = GameManager.Instance.UserName;
         classIdx = providedClassIdx ?? classIdx;
+        Debug.Log(serverUrl);
+        Debug.Log(port);
         TownManager.Instance.GameStart(serverUrl, port, nickname, classIdx);
 
         if (deactivateObject)

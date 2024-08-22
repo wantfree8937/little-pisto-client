@@ -39,6 +39,8 @@ public class UIAnimation : MonoBehaviour
 
     private void OnCharacterSelect()
     {
+        GameManager.Instance.UserCoin = TownManager.Instance.coinDisplay.GetCoinCount();
+
         C_TownSelect c_TownSelect = new C_TownSelect {};
         GameManager.Network.Send(c_TownSelect);
 
