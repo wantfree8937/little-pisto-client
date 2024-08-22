@@ -41,7 +41,7 @@ public class NetworkManager
 			// IPHostEntry ipHost = Dns.GetHostEntry(host);
 			// ipAddr = ipHost.AddressList[0];
 
-			ipAddr = IPAddress.Parse("3.36.133.58");
+			ipAddr = IPAddress.Parse("127.0.0.1");
 		}
 		
 		int port; 

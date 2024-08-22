@@ -50,6 +50,8 @@ public class UIBattleLog : MonoBehaviour
 
     public void SetBossClear()
     {
+        C_FinalCheck c_FinalCheck = new C_FinalCheck {};
+        GameManager.Network.Send(c_FinalCheck);
         BossClear.gameObject.SetActive(true);
     }
 
