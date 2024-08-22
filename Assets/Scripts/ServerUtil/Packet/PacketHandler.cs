@@ -36,7 +36,7 @@ public static void S_PlaySoundHandler(PacketSession session, IMessage packet)
         if (ConnectPacket == null)
             return;
 
-        TownManager.Instance.uiStart.ConfirmServer("127.0.0.1", "3000");
+        TownManager.Instance.uiStart.ConfirmServer("3.36.133.58", "3000");
 
         if (!string.IsNullOrEmpty(GameManager.Instance.UserName) && !string.IsNullOrEmpty(GameManager.Instance.PassWord))
         {
