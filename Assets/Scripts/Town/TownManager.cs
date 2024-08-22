@@ -88,8 +88,7 @@ public class TownManager : MonoBehaviour
 
     public void Connected()
     {
-        C_Connect connectPacket = new C_Connect{};
-
+        C_Connect connectPacket = new C_Connect { };
         GameManager.Network.Send(connectPacket);
     }
 

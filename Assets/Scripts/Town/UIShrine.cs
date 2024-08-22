@@ -32,6 +32,7 @@ public class UIShrine : MonoBehaviour
     private int upgradeCost;
     private int ritualLevel;
     private ImagePulse arrowGroupPulse;
+    public bool finalStageCheck;
 
     void Start()
     {
@@ -39,7 +40,6 @@ public class UIShrine : MonoBehaviour
         upgradeBtn.onClick.AddListener(OnUpgradeButtonClicked);
         lastStageBtn.onClick.AddListener(OnLastStageButtonClicked);
 
-        soulAmount = TownManager.Instance.soulDisplay.GetSoulCount();
         TownManager.Instance.gaugeBar.gaugeStart = ritualLevel;
 
         // 슬라이더의 최소값과 최대값 설정
@@ -98,6 +98,12 @@ public class UIShrine : MonoBehaviour
         }
     }
 
+    public void UpdateSoulAmount(int amount)
+    {
+        soulAmount = amount;
+        UpdateShrineUI();
+    }
+
     // 업그레이드 버튼 클릭시 호출
     private void OnUpgradeButtonClicked()
     {
@@ -134,8 +140,17 @@ public class UIShrine : MonoBehaviour
 
             // 게이지가 최대값에 도달하면 라스트 스테이지 버튼을 활성화
             bool isMaxLevel = ritualGaugeBar.value >= ritualGaugeBar.maxValue;
-            lastStageBtn.gameObject.SetActive(true);
-            arrowGroup.SetActive(true);
+
+            if (finalStageCheck)
+            {
+                lastStageBtn.gameObject.SetActive(false);
+                arrowGroup.SetActive(false);
+            }
+            else
+            {
+                lastStageBtn.gameObject.SetActive(isMaxLevel);
+                arrowGroup.SetActive(isMaxLevel);
+            }
         }
     }
 
@@ -167,5 +182,11 @@ public class UIShrine : MonoBehaviour
        
         // UI 업데이트
         UpdateShrineUI();
+    }
+
+    public void UpdateFinalCheck(bool finalcheck)
+    {
+        finalStageCheck = finalcheck;
+        UpdateRitualGauge();
     }
 }
