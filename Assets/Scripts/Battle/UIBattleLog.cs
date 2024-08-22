@@ -35,6 +35,7 @@ public class UIBattleLog : MonoBehaviour
         if (clearBtn != null)
         {
             clearBtn.onClick.AddListener(() => OnClick(1));
+
         }
     }
 
@@ -50,6 +51,7 @@ public class UIBattleLog : MonoBehaviour
 
     public void SetBossClear()
     {
+        Managers.Sound.Play("finalBossCut", Define.Sound.Bgm, volume: 0.2f);
         C_FinalCheck c_FinalCheck = new C_FinalCheck {};
         GameManager.Network.Send(c_FinalCheck);
         BossClear.gameObject.SetActive(true);

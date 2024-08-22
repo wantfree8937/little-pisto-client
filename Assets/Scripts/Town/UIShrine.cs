@@ -186,6 +186,7 @@ public class UIShrine : MonoBehaviour
 
     public void UpdateFinalCheck(bool finalcheck)
     {
+        Debug.Log(finalcheck);
         finalStageCheck = finalcheck;
         UpdateRitualGauge();
     }

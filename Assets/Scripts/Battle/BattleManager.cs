@@ -105,7 +105,7 @@ private void SetBgm(int dungeonCode)
     switch (dungeonCode)
     {
         case 5004:
-            Managers.Sound.Play("bossBgm", Define.Sound.Bgm, volume: 0.3f);
+            Managers.Sound.Play("bossBgm", Define.Sound.Bgm, volume: 0.15f);
             break;
         case 5005:
             Managers.Sound.Play("dungeonHell", Define.Sound.Bgm, volume: 0.1f);
