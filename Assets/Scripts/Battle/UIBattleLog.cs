@@ -14,8 +14,11 @@ public class UIBattleLog : MonoBehaviour
     [SerializeField] private TMP_Text txtLog;
     [SerializeField] private Button[] btns;
     [SerializeField] private TMP_Text[] btnTexts;
+    [SerializeField] private Button clearBtn;
 
+    [SerializeField] private GameObject BossClear;
     [SerializeField] private Image imgContinue;
+    
 
     private BtnInfo[] btnInfos = null;
     private bool done = false;
@@ -28,6 +31,11 @@ public class UIBattleLog : MonoBehaviour
             int idx = i+1;
             btns[i].onClick.AddListener(() => { OnClick(idx);});
         }
+
+        if (clearBtn != null)
+        {
+            clearBtn.onClick.AddListener(() => OnClick(1));
+        }
     }
 
     public void Set(BattleLog battleLog)
@@ -38,6 +46,11 @@ public class UIBattleLog : MonoBehaviour
             btnInfos = null;
 
         SetLog(battleLog.Msg, battleLog.TypingAnimation);
+    }
+
+    public void SetBossClear()
+    {
+        BossClear.gameObject.SetActive(true);
     }
 
     private void Update()

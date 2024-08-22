@@ -33,6 +33,7 @@ public class BattleManager : MonoBehaviour
     
     private string baseMonsterPath = "Monster/Monster1";
 
+    public bool IsBoss;
     private int animationCode;
 
     private int[] animCodeList = new[]
