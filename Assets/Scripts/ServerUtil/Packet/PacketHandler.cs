@@ -36,8 +36,7 @@ public static void S_PlaySoundHandler(PacketSession session, IMessage packet)
         if (ConnectPacket == null)
             return;
 
-        // TownManager.Instance.uiStart.ConfirmServer("3.36.133.58", "3000");
-        TownManager.Instance.uiStart.ConfirmServer("127.0.0.1", "3000");
+        TownManager.Instance.uiStart.ConfirmServer("3.36.133.58", "3000");
 
         if (!string.IsNullOrEmpty(GameManager.Instance.UserName) && !string.IsNullOrEmpty(GameManager.Instance.PassWord))
         {
@@ -112,7 +111,6 @@ public static void S_PlaySoundHandler(PacketSession session, IMessage packet)
 		TownManager.Instance.soulDisplay.SetSouls(playerItemPacket.Soul);
 		TownManager.Instance.coinDisplay.UpdateCoinDisplay();
         TownManager.Instance.soulDisplay.UpdateSoulDisplay();
-		TownManager.Instance.uiShrine.UpdateSoulAmount(playerItemPacket.Soul);
     }
 
 	public static void S_EnterHandler(PacketSession session, IMessage packet)
@@ -121,10 +119,8 @@ public static void S_PlaySoundHandler(PacketSession session, IMessage packet)
         if (enterPacket == null)
 	        return;
 
-		Debug.Log(enterPacket.FinalCheck);
 		TownManager.Instance.Spawn(enterPacket.Player);
-		TownManager.Instance.uiShrine.UpdateFinalCheck(enterPacket.FinalCheck);
-    }
+	}
 	
 	public static void S_LeaveHandler(PacketSession session, IMessage packet) {}
 	
@@ -266,39 +262,21 @@ public static void S_PlaySoundHandler(PacketSession session, IMessage packet)
 		var uiScreen = BattleManager.Instance.UiScreen;
 		uiScreen.gameObject.SetActive(false);
 	}
-
-    public static void S_BattleLogHandler(PacketSession session, IMessage packet)
-    {
-        S_BattleLog pkt = packet as S_BattleLog;
-        if (pkt == null)
-            return;
-
-        // 로그 메시지 출력
-        Debug.Log(pkt.BattleLog.Msg);
-
-        // 'BOSS'라는 단어가 포함되어 있으면 IsBoss를 true로 설정
-        if (pkt.BattleLog != null && pkt.BattleLog.Msg != null)
-        {
-            if (pkt.BattleLog.Msg.Contains("최종"))
-            {
-                BattleManager.Instance.IsfinalBoss = true;
-            }
-
-            // IsBoss가 true인 상태에서 '승리'라는 단어가 포함되어 있으면 IsBoss를 false로 설정
-            if (BattleManager.Instance.IsfinalBoss && pkt.BattleLog.Msg.Contains("승리"))
-            {
-                BattleManager.Instance.IsfinalBoss = false;
-                var bossClearLog = BattleManager.Instance.UiBattleLog;
-                bossClearLog.SetBossClear();
-            }
-
-            // BattleLog UI 업데이트
-            var uiBattleLog = BattleManager.Instance.UiBattleLog;
-            uiBattleLog.Set(pkt.BattleLog);
-        }
-    }
-
-    public static void S_SetPlayerHpHandler(PacketSession session, IMessage packet)
+	
+	public static void S_BattleLogHandler(PacketSession session, IMessage packet)
+	{
+		S_BattleLog pkt = packet as S_BattleLog;
+		if (pkt == null)
+			return;
+		
+		if (pkt.BattleLog != null)
+		{
+			var uiBattleLog = BattleManager.Instance.UiBattleLog;
+			uiBattleLog.Set(pkt.BattleLog);
+		}
+	}
+	
+	public static void S_SetPlayerHpHandler(PacketSession session, IMessage packet)
 	{
 		S_SetPlayerHp pkt = packet as S_SetPlayerHp;
 		if (pkt == null)
