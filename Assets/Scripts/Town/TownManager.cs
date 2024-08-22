@@ -52,6 +52,9 @@ public class TownManager : MonoBehaviour
         playerDb.Add(1007, "Player/Player7");
         playerDb.Add(1008, "Player/Player8");
         playerDb.Add(1009, "Player/Player9");
+        
+        SetBgm("titleBgm");
+
     }
 
     private void Start()
@@ -81,7 +84,6 @@ public class TownManager : MonoBehaviour
 
         GameManager.Network.Send(enterPacket);
 
-        Debug.Log("Sparta@@@@@" + GameManager.Instance.ClassIdx);
 
         txtServer.text = gameServer;
     }
@@ -93,6 +95,7 @@ public class TownManager : MonoBehaviour
     }
 
     public void Spawn(PlayerInfo playerInfo)
+    
     {
         var tr = playerInfo.Transform;
         
@@ -104,7 +107,26 @@ public class TownManager : MonoBehaviour
         myPlayer.SetIsMine(true);
 
         TurnGameUI();
+        SetBgm("townBgm");
     }
+    private void SetBgm(string bgmName)
+{
+    // BGM 설정
+    switch(bgmName){
+        case "townBgm":
+        Managers.Sound.Play("townBgm", Define.Sound.Bgm, volume: 0.1f);
+        break;
+        case "titleBgm":
+        Managers.Sound.Play("titleBgm", Define.Sound.Bgm, volume: 0.1f);
+        break;
+        default:
+            Managers.Sound.Play("townBgm", Define.Sound.Bgm, volume: 0.1f);
+            break;
+
+    }
+
+}
+    
 
     public Player CreatePlayer(PlayerInfo playerInfo, Vector3 spawnPos)
     {

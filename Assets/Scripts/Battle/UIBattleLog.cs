@@ -96,6 +96,7 @@ public class UIBattleLog : MonoBehaviour
         
         
         msg = log;
+        StartCoroutine(playSound(msg));
         
         if(typing)
             txtLog.DOText(msg, msg.Length/20).SetEase(Ease.Linear).OnComplete(LogDone);
@@ -104,6 +105,22 @@ public class UIBattleLog : MonoBehaviour
             txtLog.text = msg;
             LogDone();
         }
+    }
+
+    private IEnumerator playSound(string msg)
+    {
+        // BGM 설정
+        switch(msg){
+            case "전투 승리!":
+            Managers.Sound.SetBgmVolume(0.04f);
+            Managers.Sound.Play("stageClear", volume: 0.2f);
+            yield return new WaitForSeconds(2.3f); //2.3초 기다림
+            Managers.Sound.SetBgmVolume(0.1f);
+            break;
+            default:
+            break;
+         }
+
     }
 
     private void SetBtn(BtnInfo[] btnInfos)

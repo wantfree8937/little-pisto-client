@@ -51,5 +51,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "LittlePisto.sln"
+    "dotnet.defaultSolution": "LittlePistos.sln"
 }
